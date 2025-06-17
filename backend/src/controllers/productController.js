@@ -1,15 +1,11 @@
-export function getAllProducts(req,res){
-  res.status(200).send("you have suppliers");
+import Product from "../model/Product.js";
+
+export async function getAllProducts(req,res){
+  try {
+    const products = await Product.find();
+    res.status(200).json(products);
+  } catch (error) {
+    console.log("Error in getAllProducts method",error);
+    res.status(500).json({message:"Internal Server Error"})    
+  }
 };
-
-export function createProduct(req,res){
-  res.status(201).send("you entered a supplier");
-}
-
-export function updateProduct(req,res){
-  res.status(200).send("you have suppliers");
-}
-
-export function deleteProduct(req,res){
-  res.status(200).send("you have suppliers");
-}

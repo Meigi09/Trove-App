@@ -1,25 +1,10 @@
 import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  description: {
-    type: String,
-    trim: true
-  },
-  price: {
-    type: Number,
-    required: true,
-    min: 0
-  },
-  cost: {
-    type: Number,
-    required: true,
-    min: 0
-  },
+  name: { type: String, required: true, trim: true },
+  description: { type: String, trim: true },
+  price: { type: Number, required: true, min: 0 },
+  cost: { type: Number, required: true, min: 0 },
   unit: {
     type: String,
     enum: ['piece', 'kg', 'liter', 'box', 'pack'],
@@ -36,19 +21,44 @@ const productSchema = new mongoose.Schema({
     min: 0,
     default: 0
   },
-  category: {
-    type: String,
-    enum: ['electronics', 'office', 'food', 'furniture', 'clothing', 'other'],
-    default: 'other'
+  averageRating: {
+    type: Number,
+    min: 1,
+    max: 5,
+    default: null
   },
-  
-},{
-  timestamps:true,
-});
+  reviewCount: {
+    type: Number,
+    default: 0
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: true
+  }
+}, { timestamps: true });
+
+productSchema.statics.updateRating = async function(productId) {
+  const stats = await this.model('Review').aggregate([
+    { $match: { productId } },
+    {
+      $group: {
+        _id: '$productId',
+        avgRating: { $avg: '$rating' },
+        count: { $sum: 1 }
+      }
+    }
+  ]);
+  await this.findByIdAndUpdate(productId, {
+    averageRating: stats[0] ? stats[0].avgRating : null,
+    reviewCount: stats[0] ? stats[0].count : 0
+  });
+};
 
 productSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
 
-export default mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema);
+export default Product;
