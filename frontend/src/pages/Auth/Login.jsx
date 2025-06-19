@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff, Mail, Lock, LogIn, ArrowLeft } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 
@@ -15,6 +15,16 @@ const LoginPage = () => {
   const [errors, setErrors] = useState({});
 
   const { login, isLoading, error } = useAuthStore();
+
+  // Check for pre-selected role from landing page
+  useEffect(() => {
+    const selectedRole = localStorage.getItem("selectedRole");
+    if (selectedRole && ["supplier", "admin"].includes(selectedRole)) {
+      setFormData((prev) => ({ ...prev, role: selectedRole }));
+      // Clear the stored role
+      localStorage.removeItem("selectedRole");
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -60,11 +70,12 @@ const LoginPage = () => {
 
       // Handle successful login based on role
       if (formData.role === "supplier") {
-        console.log("Redirecting to supplier dashboard");
+        window.location.href = "/supplier";
       } else if (formData.role === "customer") {
-        console.log("Redirecting to customer dashboard");
+        window.location.href = "/customer";
       } else if (formData.role === "admin") {
         console.log("Redirecting to admin dashboard");
+        // Add admin dashboard route when ready
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -79,11 +90,11 @@ const LoginPage = () => {
           <button
             className="flex items-center space-x-3 text-gray-600 hover:text-coral-main transition-colors duration-300"
             onClick={() => {
-              window.history.back();
+              window.location.href = "/";
             }}
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-light tracking-wide">Return</span>
+            <span className="font-light tracking-wide">Back to Home</span>
           </button>
         </div>
       </nav>
