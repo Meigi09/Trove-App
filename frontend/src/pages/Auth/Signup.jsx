@@ -136,7 +136,7 @@ const SignupPage = () => {
       <nav className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-8 py-4">
           <button
-            className="flex items-center space-x-3 text-gray-600 hover:text-coral-main transition-colors duration-500"
+            className="flex items-center space-x-3 text-gray-600 hover:text-primary-burgundy transition-colors duration-500"
             onClick={() => {
               window.history.back();
             }}
@@ -152,19 +152,19 @@ const SignupPage = () => {
         <div className="max-w-md mx-auto">
           {/* Header Section */}
           <div className="text-center mb-8">
-            <div className="w-1 h-8 bg-gradient-to-b from-coral-main to-coral-secondary mx-auto mb-6"></div>
+            <div className="w-1 h-8 bg-gradient-to-b from-primary-burgundy to-burgundy-light mx-auto mb-6"></div>
             <div className="flex justify-center mb-6">
-              <div className="w-12 h-12 border border-gray-300 flex items-center justify-center bg-gradient-to-br from-coral-whisper to-coral-soft">
-                <UserPlus className="w-8 h-8 text-coral-main" />
+              <div className="w-12 h-12 border border-gray-300 flex items-center justify-center bg-gradient-to-br from-gold-whisper to-gold-soft">
+                <UserPlus className="w-8 h-8 text-primary-burgundy" />
               </div>
             </div>
             <h1 className="text-2xl font-extralight mb-3 tracking-tight">
               <span className="block text-gray-700">Join</span>
-              <span className="block bg-gradient-to-r from-coral-main to-coral-secondary bg-clip-text text-transparent font-light">
+              <span className="block bg-gradient-to-r from-primary-burgundy to-burgundy-light bg-clip-text text-transparent font-light">
                 Rwanda Treasures
               </span>
             </h1>
-            <div className="w-8 h-px bg-gradient-to-r from-coral-main to-coral-secondary mx-auto mt-6"></div>
+            <div className="w-8 h-px bg-gradient-to-r from-primary-burgundy to-burgundy-light mx-auto mt-6"></div>
           </div>
 
           {/* Error Display */}
@@ -181,7 +181,7 @@ const SignupPage = () => {
                 onClick={() => setFormData({ ...formData, role: "customer" })}
                 className={`py-4 px-4 font-light text-xs tracking-wide transition-all duration-500 ${
                   formData.role === "customer"
-                    ? "bg-gradient-to-r from-coral-main to-coral-secondary text-white"
+                    ? "bg-gradient-to-r from-primary-burgundy to-burgundy-light text-white"
                     : "text-gray-600 hover:text-gray-800"
                 }`}
               >
@@ -191,7 +191,7 @@ const SignupPage = () => {
                 onClick={() => setFormData({ ...formData, role: "supplier" })}
                 className={`py-4 px-4 font-light text-xs tracking-wide transition-all duration-500 ${
                   formData.role === "supplier"
-                    ? "bg-gradient-to-r from-coral-main to-coral-secondary text-white"
+                    ? "bg-gradient-to-r from-primary-burgundy to-burgundy-light text-white"
                     : "text-gray-600 hover:text-gray-800"
                 }`}
               >
@@ -201,7 +201,7 @@ const SignupPage = () => {
                 onClick={() => setFormData({ ...formData, role: "admin" })}
                 className={`py-4 px-4 font-light text-xs tracking-wide transition-all duration-500 ${
                   formData.role === "admin"
-                    ? "bg-gradient-to-r from-coral-main to-coral-secondary text-white"
+                    ? "bg-gradient-to-r from-primary-burgundy to-burgundy-light text-white"
                     : "text-gray-600 hover:text-gray-800"
                 }`}
               >
@@ -214,7 +214,7 @@ const SignupPage = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Username Input */}
             <div className="relative">
-              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-coral-main to-coral-secondary"></div>
+              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-primary-burgundy to-burgundy-light"></div>
               <div className="pl-6">
                 <label className="block text-xs font-light text-gray-500 mb-2 tracking-widest uppercase">
                   Username
@@ -229,7 +229,7 @@ const SignupPage = () => {
                     className={`w-full pl-8 pr-0 py-3 bg-transparent border-0 border-b transition-all duration-500 text-gray-700 font-light placeholder-gray-400 outline-none ${
                       errors.username
                         ? "border-red-400"
-                        : "border-gray-200 focus:border-coral-main"
+                        : "border-gray-200 focus:border-primary-burgundy"
                     }`}
                     placeholder="your_username"
                     required
@@ -245,7 +245,7 @@ const SignupPage = () => {
 
             {/* Full Name Input */}
             <div className="relative">
-              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-coral-light to-coral-main"></div>
+              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-primary-gold to-primary-burgundy"></div>
               <div className="pl-6">
                 <label className="block text-xs font-light text-gray-500 mb-2 tracking-widest uppercase">
                   Full Name
@@ -260,7 +260,7 @@ const SignupPage = () => {
                     className={`w-full pl-8 pr-0 py-3 bg-transparent border-0 border-b transition-all duration-500 text-gray-700 font-light placeholder-gray-400 outline-none ${
                       errors.name
                         ? "border-red-400"
-                        : "border-gray-200 focus:border-coral-light"
+                        : "border-gray-200 focus:border-primary-gold"
                     }`}
                     placeholder="Your Full Name"
                     required
@@ -276,7 +276,7 @@ const SignupPage = () => {
 
             {/* Email Input */}
             <div className="relative">
-              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-coral-secondary to-coral-light"></div>
+              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-burgundy-light to-primary-gold"></div>
               <div className="pl-6">
                 <label className="block text-xs font-light text-gray-500 mb-2 tracking-widest uppercase">
                   Email Address
@@ -291,7 +291,7 @@ const SignupPage = () => {
                     className={`w-full pl-8 pr-0 py-3 bg-transparent border-0 border-b transition-all duration-500 text-gray-700 font-light placeholder-gray-400 outline-none ${
                       errors.email
                         ? "border-red-400"
-                        : "border-gray-200 focus:border-coral-secondary"
+                        : "border-gray-200 focus:border-burgundy-light"
                     }`}
                     placeholder="your@email.com"
                     required
@@ -307,7 +307,7 @@ const SignupPage = () => {
 
             {/* Password Input */}
             <div className="relative">
-              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-coral-main to-coral-secondary"></div>
+              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-primary-burgundy to-burgundy-light"></div>
               <div className="pl-6">
                 <label className="block text-xs font-light text-gray-500 mb-2 tracking-widest uppercase">
                   Password
@@ -322,7 +322,7 @@ const SignupPage = () => {
                     className={`w-full pl-8 pr-8 py-3 bg-transparent border-0 border-b transition-all duration-500 text-gray-700 font-light placeholder-gray-400 outline-none ${
                       errors.password
                         ? "border-red-400"
-                        : "border-gray-200 focus:border-coral-main"
+                        : "border-gray-200 focus:border-primary-burgundy"
                     }`}
                     placeholder="••••••••"
                     required
@@ -349,7 +349,7 @@ const SignupPage = () => {
 
             {/* Confirm Password Input */}
             <div className="relative">
-              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-coral-secondary to-coral-main"></div>
+              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-burgundy-light to-primary-burgundy"></div>
               <div className="pl-6">
                 <label className="block text-xs font-light text-gray-500 mb-2 tracking-widest uppercase">
                   Confirm Password
@@ -364,7 +364,7 @@ const SignupPage = () => {
                     className={`w-full pl-8 pr-8 py-3 bg-transparent border-0 border-b transition-all duration-500 text-gray-700 font-light placeholder-gray-400 outline-none ${
                       errors.confirmPassword
                         ? "border-red-400"
-                        : "border-gray-200 focus:border-coral-secondary"
+                        : "border-gray-200 focus:border-burgundy-light"
                     }`}
                     placeholder="••••••••"
                     required
@@ -402,7 +402,7 @@ const SignupPage = () => {
                 <div
                   className={`w-4 h-4 border transition-all duration-300 cursor-pointer ${
                     formData.agreeToTerms
-                      ? "border-coral-main bg-coral-main"
+                      ? "border-primary-burgundy bg-primary-burgundy"
                       : "border-gray-300 bg-white"
                   }`}
                   onClick={() =>
@@ -431,14 +431,14 @@ const SignupPage = () => {
                 I agree to the{" "}
                 <button
                   type="button"
-                  className="text-coral-main hover:text-coral-secondary font-light transition-colors duration-500 tracking-wide underline"
+                  className="text-primary-burgundy hover:text-burgundy-light font-light transition-colors duration-500 tracking-wide underline"
                 >
                   Terms of Service
                 </button>{" "}
                 and{" "}
                 <button
                   type="button"
-                  className="text-coral-main hover:text-coral-secondary font-light transition-colors duration-500 tracking-wide underline"
+                  className="text-primary-burgundy hover:text-burgundy-light font-light transition-colors duration-500 tracking-wide underline"
                 >
                   Privacy Policy
                 </button>
@@ -458,7 +458,7 @@ const SignupPage = () => {
                 className={`group relative w-full py-6 border transition-all duration-700 overflow-hidden ${
                   isLoading
                     ? "border-gray-300 bg-gray-100 cursor-not-allowed"
-                    : "border-coral-main hover:bg-gradient-to-r hover:from-coral-main hover:to-coral-secondary"
+                    : "border-primary-burgundy hover:bg-gradient-to-r hover:from-primary-burgundy hover:to-burgundy-light"
                 }`}
               >
                 <div className="relative z-10">
@@ -470,7 +470,7 @@ const SignupPage = () => {
                       </span>
                     </div>
                   ) : (
-                    <span className="font-light tracking-widest text-sm text-coral-main group-hover:text-white transition-colors duration-500">
+                    <span className="font-light tracking-widest text-sm text-primary-burgundy group-hover:text-white transition-colors duration-500">
                       JOIN RWANDA TREASURES
                     </span>
                   )}
@@ -541,7 +541,7 @@ const SignupPage = () => {
                 Already have an account?{" "}
                 <button
                   type="button"
-                  className="text-coral-main hover:text-coral-secondary font-light transition-colors duration-500 tracking-wide"
+                  className="text-primary-burgundy hover:text-burgundy-light font-light transition-colors duration-500 tracking-wide"
                   onClick={() => {
                     window.location.href = "/login";
                   }}

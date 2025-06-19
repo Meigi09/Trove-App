@@ -88,7 +88,7 @@ const LoginPage = () => {
       <nav className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-8 py-4">
           <button
-            className="flex items-center space-x-3 text-gray-600 hover:text-coral-main transition-colors duration-300"
+            className="flex items-center space-x-3 text-gray-600 hover:text-primary-burgundy transition-colors duration-300"
             onClick={() => {
               window.location.href = "/";
             }}
@@ -104,19 +104,19 @@ const LoginPage = () => {
         <div className="max-w-md mx-auto">
           {/* Header Section */}
           <div className="text-center mb-12">
-            <div className="w-1 h-8 bg-gradient-to-b from-coral-main to-coral-secondary mx-auto mb-6"></div>
+            <div className="w-1 h-8 bg-gradient-to-b from-primary-burgundy to-burgundy-light mx-auto mb-6"></div>
             <div className="flex justify-center mb-6">
-              <div className="w-12 h-12 border border-gray-300 flex items-center justify-center bg-gradient-to-br from-coral-whisper to-coral-soft">
-                <LogIn className="w-6 h-6 text-coral-main" />
+              <div className="w-12 h-12 border border-gray-300 flex items-center justify-center bg-gradient-to-br from-gold-whisper to-gold-soft">
+                <LogIn className="w-6 h-6 text-primary-burgundy" />
               </div>
             </div>
             <h1 className="text-2xl font-extralight mb-3 tracking-tight">
               <span className="block text-gray-700">Welcome</span>
-              <span className="block bg-gradient-to-r from-coral-main to-coral-secondary bg-clip-text text-transparent font-light">
+              <span className="block bg-gradient-to-r from-primary-burgundy to-burgundy-light bg-clip-text text-transparent font-light">
                 Back
               </span>
             </h1>
-            <div className="w-6 h-px bg-gradient-to-r from-coral-main to-coral-secondary mx-auto mt-4"></div>
+            <div className="w-6 h-px bg-gradient-to-r from-primary-burgundy to-burgundy-light mx-auto mt-4"></div>
           </div>
 
           {/* Error Display */}
@@ -134,8 +134,8 @@ const LoginPage = () => {
                 onClick={() => setFormData({ ...formData, role: "customer" })}
                 className={`py-3 px-3 font-light text-xs tracking-wide transition-all duration-300 ${
                   formData.role === "customer"
-                    ? "bg-coral-main text-white shadow-sm"
-                    : "text-gray-600 hover:text-coral-main hover:bg-coral-whisper"
+                    ? "bg-primary-burgundy text-white shadow-sm"
+                    : "text-gray-600 hover:text-primary-burgundy hover:bg-gold-whisper"
                 }`}
               >
                 Customer
@@ -145,8 +145,8 @@ const LoginPage = () => {
                 onClick={() => setFormData({ ...formData, role: "supplier" })}
                 className={`py-3 px-3 font-light text-xs tracking-wide transition-all duration-300 ${
                   formData.role === "supplier"
-                    ? "bg-coral-main text-white shadow-sm"
-                    : "text-gray-600 hover:text-coral-main hover:bg-coral-whisper"
+                    ? "bg-primary-burgundy text-white shadow-sm"
+                    : "text-gray-600 hover:text-primary-burgundy hover:bg-gold-whisper"
                 }`}
               >
                 Supplier
@@ -156,8 +156,8 @@ const LoginPage = () => {
                 onClick={() => setFormData({ ...formData, role: "admin" })}
                 className={`py-3 px-3 font-light text-xs tracking-wide transition-all duration-300 ${
                   formData.role === "admin"
-                    ? "bg-coral-main text-white shadow-sm"
-                    : "text-gray-600 hover:text-coral-main hover:bg-coral-whisper"
+                    ? "bg-primary-burgundy text-white shadow-sm"
+                    : "text-gray-600 hover:text-primary-burgundy hover:bg-gold-whisper"
                 }`}
               >
                 Admin
@@ -169,7 +169,7 @@ const LoginPage = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Input */}
             <div className="relative">
-              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-coral-main to-coral-secondary"></div>
+              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-primary-burgundy to-burgundy-light"></div>
               <div className="pl-5">
                 <label className="block text-xs font-light text-gray-500 mb-2 tracking-widest uppercase">
                   Email Address
@@ -184,7 +184,7 @@ const LoginPage = () => {
                     className={`w-full pl-6 pr-0 py-3 bg-transparent border-0 border-b transition-all duration-300 text-gray-700 font-light placeholder-gray-400 outline-none ${
                       errors.email
                         ? "border-red-400"
-                        : "border-gray-200 focus:border-coral-main"
+                        : "border-gray-200 focus:border-primary-burgundy"
                     }`}
                     placeholder="your@email.com"
                     required
@@ -200,7 +200,7 @@ const LoginPage = () => {
 
             {/* Password Input */}
             <div className="relative">
-              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-coral-secondary to-coral-main"></div>
+              <div className="absolute left-0 top-0 w-px h-full bg-gradient-to-b from-burgundy-light to-primary-burgundy"></div>
               <div className="pl-5">
                 <label className="block text-xs font-light text-gray-500 mb-2 tracking-widest uppercase">
                   Password
@@ -215,7 +215,7 @@ const LoginPage = () => {
                     className={`w-full pl-6 pr-8 py-3 bg-transparent border-0 border-b transition-all duration-300 text-gray-700 font-light placeholder-gray-400 outline-none ${
                       errors.password
                         ? "border-red-400"
-                        : "border-gray-200 focus:border-coral-secondary"
+                        : "border-gray-200 focus:border-burgundy-light"
                     }`}
                     placeholder="••••••••"
                     required
@@ -223,7 +223,7 @@ const LoginPage = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-coral-main transition-colors duration-300"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-burgundy transition-colors duration-300"
                   >
                     {showPassword ? (
                       <EyeOff className="w-4 h-4" />
@@ -254,7 +254,7 @@ const LoginPage = () => {
                   <div
                     className={`w-4 h-4 border transition-all duration-300 ${
                       formData.rememberMe
-                        ? "border-coral-main bg-coral-main"
+                        ? "border-primary-burgundy bg-primary-burgundy"
                         : "border-gray-300 bg-white"
                     }`}
                   >
@@ -279,7 +279,7 @@ const LoginPage = () => {
               </label>
               <button
                 type="button"
-                className="text-sm font-light text-gray-500 hover:text-coral-main transition-colors duration-300 tracking-wide"
+                className="text-sm font-light text-gray-500 hover:text-primary-burgundy transition-colors duration-300 tracking-wide"
               >
                 Forgot password?
               </button>
@@ -293,7 +293,7 @@ const LoginPage = () => {
                 className={`group relative w-full py-4 border transition-all duration-500 overflow-hidden ${
                   isLoading
                     ? "border-gray-300 bg-gray-100 cursor-not-allowed"
-                    : "border-coral-main hover:bg-coral-main hover:shadow-lg"
+                    : "border-primary-burgundy hover:bg-primary-burgundy hover:shadow-lg"
                 }`}
               >
                 <div className="relative z-10">
@@ -305,7 +305,7 @@ const LoginPage = () => {
                       </span>
                     </div>
                   ) : (
-                    <span className="font-light tracking-widest text-sm text-coral-main group-hover:text-white transition-colors duration-300">
+                    <span className="font-light tracking-widest text-sm text-primary-burgundy group-hover:text-white transition-colors duration-300">
                       ENTER RWANDA TREASURES
                     </span>
                   )}
@@ -329,7 +329,7 @@ const LoginPage = () => {
             <div className="grid grid-cols-2 gap-1">
               <button
                 type="button"
-                className="group border border-gray-200 py-3 hover:border-coral-light hover:bg-coral-whisper transition-all duration-300"
+                className="group border border-gray-200 py-3 hover:border-primary-gold hover:bg-gold-whisper transition-all duration-300"
               >
                 <div className="flex items-center justify-center space-x-2">
                   <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -350,20 +350,20 @@ const LoginPage = () => {
                       d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                     />
                   </svg>
-                  <span className="text-sm font-light text-gray-600 tracking-wide group-hover:text-coral-main transition-colors duration-300">
+                  <span className="text-sm font-light text-gray-600 tracking-wide group-hover:text-primary-burgundy transition-colors duration-300">
                     Google
                   </span>
                 </div>
               </button>
               <button
                 type="button"
-                className="group border border-gray-200 py-3 hover:border-coral-light hover:bg-coral-whisper transition-all duration-300"
+                className="group border border-gray-200 py-3 hover:border-primary-gold hover:bg-gold-whisper transition-all duration-300"
               >
                 <div className="flex items-center justify-center space-x-2">
                   <svg className="w-4 h-4" fill="#1877F2" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                   </svg>
-                  <span className="text-sm font-light text-gray-600 tracking-wide group-hover:text-coral-main transition-colors duration-300">
+                  <span className="text-sm font-light text-gray-600 tracking-wide group-hover:text-primary-burgundy transition-colors duration-300">
                     Facebook
                   </span>
                 </div>
@@ -376,7 +376,7 @@ const LoginPage = () => {
                 New to Rwanda Treasures?{" "}
                 <button
                   type="button"
-                  className="text-coral-main hover:text-coral-secondary font-light transition-colors duration-300 tracking-wide underline"
+                  className="text-primary-burgundy hover:text-burgundy-light font-light transition-colors duration-300 tracking-wide underline"
                   onClick={() => {
                     window.location.href = "/signup";
                   }}

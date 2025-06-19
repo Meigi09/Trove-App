@@ -595,7 +595,7 @@ const CustomerPage = () => {
           <Button
             variant="outline"
             onClick={() => setActiveView("suppliers")}
-            className="border-coral-main text-coral-main hover:bg-coral-whisper"
+            className="border-primary-burgundy text-primary-burgundy hover:bg-gold-whisper"
           >
             View All Suppliers <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
@@ -611,7 +611,7 @@ const CustomerPage = () => {
                 <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">
                   {supplier.image}
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-coral-main transition-colors">
+                <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-primary-burgundy transition-colors">
                   {supplier.name}
                 </h3>
                 <div className="flex items-center justify-center mb-2">
@@ -652,7 +652,7 @@ const CustomerPage = () => {
           <Button
             variant="outline"
             onClick={() => setActiveView("products")}
-            className="border-coral-main text-coral-main hover:bg-coral-whisper"
+            className="border-primary-burgundy text-primary-burgundy hover:bg-gold-whisper"
           >
             View All Products <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
@@ -661,7 +661,7 @@ const CustomerPage = () => {
           {products.slice(0, 8).map((product, index) => (
             <div
               key={product._id}
-              className={`group bg-white rounded-2xl border border-gray-100 hover:border-coral-soft hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${
+              className={`group bg-white rounded-2xl border border-gray-100 hover:border-gold-soft hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${
                 isLoaded
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-4"
@@ -684,8 +684,8 @@ const CustomerPage = () => {
                     }}
                     className={`w-8 h-8 rounded-full shadow-md flex items-center justify-center transition-colors ${
                       isInWishlist(product._id, "product")
-                        ? "bg-coral-main text-white"
-                        : "bg-white hover:bg-coral-whisper text-coral-main"
+                        ? "bg-primary-burgundy text-white"
+                        : "bg-white hover:bg-gold-whisper text-primary-burgundy"
                     }`}
                   >
                     <Heart
@@ -701,16 +701,16 @@ const CustomerPage = () => {
                       e.stopPropagation();
                       openProductDetails(product);
                     }}
-                    className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-coral-whisper transition-colors"
+                    className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gold-whisper transition-colors"
                   >
-                    <Eye className="w-4 h-4 text-coral-main" />
+                    <Eye className="w-4 h-4 text-primary-burgundy" />
                   </button>
                 </div>
 
                 {/* Stock Badge */}
                 {product.stockQuantity <= 10 && (
                   <div className="absolute top-3 left-3">
-                    <span className="bg-coral-main text-white text-xs font-medium px-2 py-1 rounded-full">
+                    <span className="bg-primary-burgundy text-white text-xs font-medium px-2 py-1 rounded-full">
                       Limited Stock
                     </span>
                   </div>
@@ -720,7 +720,7 @@ const CustomerPage = () => {
               {/* Product Info */}
               <div className="p-5">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-gray-900 text-lg leading-tight group-hover:text-coral-main transition-colors">
+                  <h3 className="font-semibold text-gray-900 text-lg leading-tight group-hover:text-primary-burgundy transition-colors">
                     {product.name}
                   </h3>
                   <div className="flex items-center space-x-1">
@@ -787,7 +787,7 @@ const CustomerPage = () => {
                       addToCart(product);
                     }}
                     disabled={product.stockQuantity === 0}
-                    className="bg-coral-main text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-coral-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-primary-burgundy text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-burgundy-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Add to Cart
                   </button>
@@ -823,7 +823,7 @@ const CustomerPage = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
-                    <h3 className="font-semibold text-gray-900 group-hover:text-coral-main transition-colors">
+                    <h3 className="font-semibold text-gray-900 group-hover:text-primary-burgundy transition-colors">
                       {supplier.name}
                     </h3>
                     {supplier.verified && (
@@ -891,7 +891,7 @@ const CustomerPage = () => {
                           e.stopPropagation();
                           openSupplierProfile(supplier);
                         }}
-                        className="bg-coral-main hover:bg-coral-secondary text-white text-xs"
+                        className="bg-primary-burgundy hover:bg-burgundy-light text-white text-xs"
                       >
                         View Store
                       </Button>
@@ -919,7 +919,7 @@ const CustomerPage = () => {
         {filteredProducts.map((product, index) => (
           <div
             key={product._id}
-            className={`group bg-white rounded-2xl border border-gray-100 hover:border-coral-soft hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${
+            className={`group bg-white rounded-2xl border border-gray-100 hover:border-gold-soft hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${
               isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
             style={{ transitionDelay: `${index * 50}ms` }}
@@ -940,8 +940,8 @@ const CustomerPage = () => {
                   }}
                   className={`w-8 h-8 rounded-full shadow-md flex items-center justify-center transition-colors ${
                     isInWishlist(product._id, "product")
-                      ? "bg-coral-main text-white"
-                      : "bg-white hover:bg-coral-whisper text-coral-main"
+                      ? "bg-primary-burgundy text-white"
+                      : "bg-white hover:bg-gold-whisper text-primary-burgundy"
                   }`}
                 >
                   <Heart
@@ -955,16 +955,16 @@ const CustomerPage = () => {
                     e.stopPropagation();
                     openProductDetails(product);
                   }}
-                  className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-coral-whisper transition-colors"
+                  className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gold-whisper transition-colors"
                 >
-                  <Eye className="w-4 h-4 text-coral-main" />
+                  <Eye className="w-4 h-4 text-primary-burgundy" />
                 </button>
               </div>
 
               {/* Stock Badge */}
               {product.stockQuantity <= 10 && (
                 <div className="absolute top-3 left-3">
-                  <span className="bg-coral-main text-white text-xs font-medium px-2 py-1 rounded-full">
+                  <span className="bg-primary-burgundy text-white text-xs font-medium px-2 py-1 rounded-full">
                     Limited Stock
                   </span>
                 </div>
@@ -974,7 +974,7 @@ const CustomerPage = () => {
             {/* Product Info */}
             <div className="p-5">
               <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-gray-900 text-lg leading-tight group-hover:text-coral-main transition-colors">
+                <h3 className="font-semibold text-gray-900 text-lg leading-tight group-hover:text-primary-burgundy transition-colors">
                   {product.name}
                 </h3>
                 <div className="flex items-center space-x-1">
@@ -1041,7 +1041,7 @@ const CustomerPage = () => {
                     addToCart(product);
                   }}
                   disabled={product.stockQuantity === 0}
-                  className="bg-coral-main text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-coral-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-primary-burgundy text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-burgundy-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Add to Cart
                 </button>
@@ -1061,7 +1061,7 @@ const CustomerPage = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-coral-main rounded-lg flex items-center justify-center text-white font-bold text-sm">
+              <div className="w-8 h-8 bg-primary-burgundy rounded-lg flex items-center justify-center text-white font-bold text-sm">
                 R
               </div>
               <div>
@@ -1077,8 +1077,8 @@ const CustomerPage = () => {
                 onClick={() => setActiveView("marketplace")}
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   activeView === "marketplace"
-                    ? "text-coral-main border-b-2 border-coral-main"
-                    : "text-gray-600 hover:text-coral-main"
+                    ? "text-primary-burgundy border-b-2 border-primary-burgundy"
+                    : "text-gray-600 hover:text-primary-burgundy"
                 }`}
               >
                 Marketplace
@@ -1087,8 +1087,8 @@ const CustomerPage = () => {
                 onClick={() => setActiveView("suppliers")}
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   activeView === "suppliers"
-                    ? "text-coral-main border-b-2 border-coral-main"
-                    : "text-gray-600 hover:text-coral-main"
+                    ? "text-primary-burgundy border-b-2 border-primary-burgundy"
+                    : "text-gray-600 hover:text-primary-burgundy"
                 }`}
               >
                 Suppliers
@@ -1097,8 +1097,8 @@ const CustomerPage = () => {
                 onClick={() => setActiveView("products")}
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   activeView === "products"
-                    ? "text-coral-main border-b-2 border-coral-main"
-                    : "text-gray-600 hover:text-coral-main"
+                    ? "text-primary-burgundy border-b-2 border-primary-burgundy"
+                    : "text-gray-600 hover:text-primary-burgundy"
                 }`}
               >
                 Products
@@ -1114,7 +1114,7 @@ const CustomerPage = () => {
                   placeholder="Search products, suppliers..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full h-10 pl-10 pr-4 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-coral-main/20 focus:border-coral-main transition-all text-sm"
+                  className="w-full h-10 pl-10 pr-4 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all text-sm"
                 />
               </div>
             </div>
@@ -1129,7 +1129,7 @@ const CustomerPage = () => {
                 <Heart className="w-4 h-4" />
                 <span className="hidden sm:inline">Wishlist</span>
                 {wishlist.length > 0 && (
-                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-coral-main text-white rounded-full flex items-center justify-center text-xs font-bold">
+                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-primary-burgundy text-white rounded-full flex items-center justify-center text-xs font-bold">
                     {wishlist.length}
                   </div>
                 )}
@@ -1156,7 +1156,7 @@ const CustomerPage = () => {
               {/* Cart */}
               <button
                 onClick={() => setShowCart(true)}
-                className="relative h-10 px-4 bg-coral-main text-white rounded-full font-medium hover:bg-coral-secondary transition-colors flex items-center space-x-2"
+                className="relative h-10 px-4 bg-primary-burgundy text-white rounded-full font-medium hover:bg-burgundy-light transition-colors flex items-center space-x-2"
               >
                 <ShoppingCart className="w-4 h-4" />
                 <span className="hidden sm:inline">Cart</span>
@@ -1185,7 +1185,7 @@ const CustomerPage = () => {
               <h2 className="text-5xl md:text-6xl font-light text-gray-900 mb-6 leading-tight">
                 Discover Rwanda's
                 <br />
-                <span className="font-semibold text-coral-main">
+                <span className="font-semibold text-primary-burgundy">
                   Finest Treasures
                 </span>
               </h2>
@@ -1198,20 +1198,20 @@ const CustomerPage = () => {
               {/* Trust Indicators */}
               <div className="flex justify-center items-center space-x-12 text-gray-500">
                 <div className="flex flex-col items-center space-y-2">
-                  <div className="w-12 h-12 bg-coral-whisper rounded-full flex items-center justify-center">
-                    <Package className="w-6 h-6 text-coral-main" />
+                  <div className="w-12 h-12 bg-gold-whisper rounded-full flex items-center justify-center">
+                    <Package className="w-6 h-6 text-primary-burgundy" />
                   </div>
                   <span className="text-sm font-medium">Authentic Quality</span>
                 </div>
                 <div className="flex flex-col items-center space-y-2">
-                  <div className="w-12 h-12 bg-coral-whisper rounded-full flex items-center justify-center">
-                    <Truck className="w-6 h-6 text-coral-main" />
+                  <div className="w-12 h-12 bg-gold-whisper rounded-full flex items-center justify-center">
+                    <Truck className="w-6 h-6 text-primary-burgundy" />
                   </div>
                   <span className="text-sm font-medium">Fast Delivery</span>
                 </div>
                 <div className="flex flex-col items-center space-y-2">
-                  <div className="w-12 h-12 bg-coral-whisper rounded-full flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-coral-main" />
+                  <div className="w-12 h-12 bg-gold-whisper rounded-full flex items-center justify-center">
+                    <Shield className="w-6 h-6 text-primary-burgundy" />
                   </div>
                   <span className="text-sm font-medium">Secure Payment</span>
                 </div>
@@ -1232,8 +1232,8 @@ const CustomerPage = () => {
                   onClick={() => setSelectedCategory(category)}
                   className={`px-6 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
                     selectedCategory === category
-                      ? "bg-coral-main text-white"
-                      : "bg-white text-gray-600 hover:bg-coral-whisper hover:text-coral-main border border-gray-200"
+                      ? "bg-primary-burgundy text-white"
+                      : "bg-white text-gray-600 hover:bg-gold-whisper hover:text-primary-burgundy border border-gray-200"
                   }`}
                 >
                   {category === "all" ? "All Products" : category}
@@ -1258,7 +1258,7 @@ const CustomerPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <div className="w-8 h-8 bg-coral-main rounded-lg flex items-center justify-center text-white font-bold text-sm">
+              <div className="w-8 h-8 bg-primary-burgundy rounded-lg flex items-center justify-center text-white font-bold text-sm">
                 R
               </div>
               <div>
@@ -1332,7 +1332,7 @@ const CustomerPage = () => {
                   </h3>
                   <Button
                     onClick={() => startChat(selectedSupplier)}
-                    className="bg-coral-main hover:bg-coral-secondary text-white"
+                    className="bg-primary-burgundy hover:bg-burgundy-light text-white"
                   >
                     <MessageSquare className="w-4 h-4 mr-2" />
                     Chat with Supplier
@@ -1352,7 +1352,7 @@ const CustomerPage = () => {
                           </h4>
                         </div>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-lg font-bold text-coral-main">
+                          <span className="text-lg font-bold text-primary-burgundy">
                             ${product.price}
                           </span>
                           <div className="flex items-center">
@@ -1374,7 +1374,7 @@ const CustomerPage = () => {
                           <Button
                             size="sm"
                             onClick={() => addToCart(product)}
-                            className="flex-1 bg-coral-main hover:bg-coral-secondary text-white"
+                            className="flex-1 bg-primary-burgundy hover:bg-burgundy-light text-white"
                           >
                             Add to Cart
                           </Button>
@@ -1445,7 +1445,7 @@ const CustomerPage = () => {
                       openReviewForm("supplier", selectedSupplier._id)
                     }
                     variant="outline"
-                    className="border-coral-main text-coral-main hover:bg-coral-whisper"
+                    className="border-primary-burgundy text-primary-burgundy hover:bg-gold-whisper"
                   >
                     Write Review
                   </Button>
@@ -1518,7 +1518,7 @@ const CustomerPage = () => {
                   <Button
                     size="sm"
                     onClick={() => addToCart(selectedProduct)}
-                    className="bg-coral-main hover:bg-coral-secondary text-white"
+                    className="bg-primary-burgundy hover:bg-burgundy-light text-white"
                   >
                     Add to Cart
                   </Button>
@@ -1546,7 +1546,7 @@ const CustomerPage = () => {
               <div className="space-y-4">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-3xl font-bold text-coral-main">
+                    <span className="text-3xl font-bold text-primary-burgundy">
                       ${selectedProduct.price}
                     </span>
                     <div className="flex items-center">
@@ -1630,7 +1630,7 @@ const CustomerPage = () => {
                       openReviewForm("product", selectedProduct._id)
                     }
                     variant="outline"
-                    className="flex-1 border-coral-main text-coral-main hover:bg-coral-whisper"
+                    className="flex-1 border-primary-burgundy text-primary-burgundy hover:bg-gold-whisper"
                   >
                     Write Review
                   </Button>
@@ -1643,7 +1643,7 @@ const CustomerPage = () => {
                   </Button>
                   <Button
                     onClick={() => addToCart(selectedProduct)}
-                    className="flex-1 bg-coral-main hover:bg-coral-secondary text-white"
+                    className="flex-1 bg-primary-burgundy hover:bg-burgundy-light text-white"
                   >
                     Add to Cart
                   </Button>
@@ -1725,7 +1725,7 @@ const CustomerPage = () => {
                       <div
                         className={`inline-block p-3 rounded-lg max-w-xs ${
                           message.isFromCustomer
-                            ? "bg-coral-main text-white"
+                            ? "bg-primary-burgundy text-white"
                             : "bg-gray-100 text-gray-900"
                         }`}
                       >
@@ -1733,7 +1733,7 @@ const CustomerPage = () => {
                         <p
                           className={`text-xs mt-1 ${
                             message.isFromCustomer
-                              ? "text-coral-100"
+                              ? "text-primary-gold"
                               : "text-gray-500"
                           }`}
                         >
@@ -1757,7 +1757,7 @@ const CustomerPage = () => {
                 />
                 <Button
                   onClick={sendMessage}
-                  className="bg-coral-main hover:bg-coral-secondary text-white"
+                  className="bg-primary-burgundy hover:bg-burgundy-light text-white"
                 >
                   <Send className="w-4 h-4" />
                 </Button>
@@ -1812,12 +1812,12 @@ const CustomerPage = () => {
                     setNewReview({ ...newReview, comment: e.target.value })
                   }
                   placeholder="Share your experience..."
-                  className="w-full p-3 border border-gray-200 rounded-lg h-24 resize-none focus:outline-none focus:ring-2 focus:ring-coral-main/20 focus:border-coral-main"
+                  className="w-full p-3 border border-gray-200 rounded-lg h-24 resize-none focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy"
                 />
               </div>
               <Button
                 onClick={submitReview}
-                className="w-full bg-coral-main hover:bg-coral-secondary text-white"
+                className="w-full bg-primary-burgundy hover:bg-burgundy-light text-white"
               >
                 Submit Review
               </Button>
@@ -1867,7 +1867,7 @@ const CustomerPage = () => {
                           <h4 className="font-medium text-gray-900 text-sm">
                             {item.name}
                           </h4>
-                          <p className="text-coral-main font-semibold text-sm">
+                          <p className="text-primary-burgundy font-semibold text-sm">
                             ${item.price}
                           </p>
                           <p className="text-xs text-gray-500">
@@ -1910,7 +1910,7 @@ const CustomerPage = () => {
                     <span className="text-lg font-semibold text-gray-900">
                       Total:
                     </span>
-                    <span className="text-2xl font-bold text-coral-main">
+                    <span className="text-2xl font-bold text-primary-burgundy">
                       ${getTotalPrice().toFixed(2)}
                     </span>
                   </div>
@@ -1919,7 +1919,7 @@ const CustomerPage = () => {
                       setShowCart(false);
                       setShowCheckout(true);
                     }}
-                    className="w-full bg-coral-main text-white py-3 rounded-xl font-semibold hover:bg-coral-secondary transition-colors"
+                    className="w-full bg-primary-burgundy text-white py-3 rounded-xl font-semibold hover:bg-burgundy-light transition-colors"
                   >
                     Proceed to Checkout
                   </button>
@@ -1970,7 +1970,7 @@ const CustomerPage = () => {
                             name: e.target.value,
                           })
                         }
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-main/20 focus:border-coral-main transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
                       />
                     </div>
                     <div>
@@ -1987,7 +1987,7 @@ const CustomerPage = () => {
                             email: e.target.value,
                           })
                         }
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-main/20 focus:border-coral-main transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
                       />
                     </div>
                   </div>
@@ -2006,7 +2006,7 @@ const CustomerPage = () => {
                           phone: e.target.value,
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-main/20 focus:border-coral-main transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
                     />
                   </div>
 
@@ -2027,7 +2027,7 @@ const CustomerPage = () => {
                           },
                         })
                       }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-main/20 focus:border-coral-main transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
                     />
                   </div>
 
@@ -2049,7 +2049,7 @@ const CustomerPage = () => {
                             },
                           })
                         }
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-main/20 focus:border-coral-main transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
                       />
                     </div>
                     <div>
@@ -2068,7 +2068,7 @@ const CustomerPage = () => {
                             },
                           })
                         }
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-main/20 focus:border-coral-main transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
                       >
                         <option value="">Select Province</option>
                         <option value="City of Kigali">City of Kigali</option>
@@ -2102,7 +2102,7 @@ const CustomerPage = () => {
                             },
                           })
                         }
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-coral-main/20 focus:border-coral-main transition-all"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
                       />
                     </div>
                     <div>
@@ -2140,7 +2140,7 @@ const CustomerPage = () => {
                               </p>
                             </div>
                           </div>
-                          <span className="font-semibold text-coral-main">
+                          <span className="font-semibold text-primary-burgundy">
                             ${(item.price * item.quantity).toFixed(2)}
                           </span>
                         </div>
@@ -2150,7 +2150,7 @@ const CustomerPage = () => {
                           <span className="text-lg font-semibold text-gray-900">
                             Total:
                           </span>
-                          <span className="text-xl font-bold text-coral-main">
+                          <span className="text-xl font-bold text-primary-burgundy">
                             ${getTotalPrice().toFixed(2)}
                           </span>
                         </div>
@@ -2160,7 +2160,7 @@ const CustomerPage = () => {
 
                   <button
                     onClick={handleCheckout}
-                    className="w-full py-4 bg-coral-main text-white rounded-xl font-semibold text-lg hover:bg-coral-secondary transition-colors"
+                    className="w-full py-4 bg-primary-burgundy text-white rounded-xl font-semibold text-lg hover:bg-burgundy-light transition-colors"
                     disabled={cart.length === 0}
                   >
                     Place Order - ${getTotalPrice().toFixed(2)}
@@ -2178,7 +2178,7 @@ const CustomerPage = () => {
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center space-x-2">
-                <Heart className="w-5 h-5 text-coral-main" />
+                <Heart className="w-5 h-5 text-primary-burgundy" />
                 <span>My Wishlist ({wishlist.length} items)</span>
               </DialogTitle>
             </DialogHeader>
@@ -2215,7 +2215,7 @@ const CustomerPage = () => {
                             </p>
                           </div>
                           <div className="flex items-center justify-between mb-3">
-                            <span className="text-lg font-bold text-coral-main">
+                            <span className="text-lg font-bold text-primary-burgundy">
                               ${item.price}
                             </span>
                             <div className="flex items-center">
@@ -2234,7 +2234,7 @@ const CustomerPage = () => {
                                 );
                                 if (product) addToCart(product);
                               }}
-                              className="flex-1 bg-coral-main hover:bg-coral-secondary text-white"
+                              className="flex-1 bg-primary-burgundy hover:bg-burgundy-light text-white"
                             >
                               Add to Cart
                             </Button>
@@ -2320,7 +2320,7 @@ const CustomerPage = () => {
           <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center space-x-2">
-                <Package className="w-5 h-5 text-coral-main" />
+                <Package className="w-5 h-5 text-primary-burgundy" />
                 <span>My Orders ({customerOrders.length})</span>
               </DialogTitle>
             </DialogHeader>
@@ -2375,7 +2375,7 @@ const CustomerPage = () => {
                           <h4 className="font-medium text-gray-900 mb-2">
                             Tracking Number
                           </h4>
-                          <p className="text-sm font-mono text-coral-main">
+                          <p className="text-sm font-mono text-primary-burgundy">
                             {order.trackingNumber}
                           </p>
                         </div>
@@ -2417,7 +2417,7 @@ const CustomerPage = () => {
                               <div
                                 className={`w-3 h-3 rounded-full mt-1 ${
                                   index === order.statusHistory.length - 1
-                                    ? "bg-coral-main"
+                                    ? "bg-primary-burgundy"
                                     : "bg-green-500"
                                 }`}
                               />
@@ -2460,7 +2460,7 @@ const CustomerPage = () => {
                             onClick={() =>
                               openReviewForm("supplier", order.supplierId)
                             }
-                            className="bg-coral-main hover:bg-coral-secondary text-white"
+                            className="bg-primary-burgundy hover:bg-burgundy-light text-white"
                           >
                             Leave Review
                           </Button>
@@ -2509,7 +2509,7 @@ const CustomerPage = () => {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-bold text-coral-main">
+                    <p className="text-lg font-bold text-primary-burgundy">
                       ${bulkOrderProduct.price}
                     </p>
                     <p className="text-xs text-gray-500">
@@ -2660,7 +2660,7 @@ const CustomerPage = () => {
                 </Button>
                 <Button
                   onClick={submitBulkOrder}
-                  className="flex-1 bg-coral-main hover:bg-coral-secondary text-white"
+                  className="flex-1 bg-primary-burgundy hover:bg-burgundy-light text-white"
                   disabled={
                     !bulkOrderForm.quantity || !bulkOrderForm.targetPrice
                   }

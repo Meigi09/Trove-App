@@ -552,10 +552,10 @@ const SupplierDashboard = () => {
             <CardTitle className="text-sm font-medium">
               Total Products
             </CardTitle>
-            <Package2 className="h-4 w-4 text-coral-main" />
+            <Package2 className="h-4 w-4 text-primary-burgundy" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-coral-main">
+            <div className="text-2xl font-bold text-primary-burgundy">
               {products.length}
             </div>
             <p className="text-xs text-gray-600">+2 from last month</p>
@@ -565,10 +565,10 @@ const SupplierDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-            <ShoppingBag className="h-4 w-4 text-coral-main" />
+            <ShoppingBag className="h-4 w-4 text-primary-burgundy" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-coral-main">
+            <div className="text-2xl font-bold text-primary-burgundy">
               {orders.length}
             </div>
             <p className="text-xs text-gray-600">+12% from last month</p>
@@ -578,10 +578,10 @@ const SupplierDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-coral-main" />
+            <DollarSign className="h-4 w-4 text-primary-burgundy" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-coral-main">
+            <div className="text-2xl font-bold text-primary-burgundy">
               ${orders.reduce((sum, order) => sum + order.total, 0).toFixed(2)}
             </div>
             <p className="text-xs text-gray-600">+8% from last month</p>
@@ -591,10 +591,10 @@ const SupplierDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Customers</CardTitle>
-            <Users className="h-4 w-4 text-coral-main" />
+            <Users className="h-4 w-4 text-primary-burgundy" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-coral-main">
+            <div className="text-2xl font-bold text-primary-burgundy">
               {customers.length}
             </div>
             <p className="text-xs text-gray-600">+3 new this month</p>
@@ -652,7 +652,7 @@ const SupplierDashboard = () => {
             });
             setShowProductForm(true);
           }}
-          className="bg-coral-main hover:bg-coral-secondary text-white"
+          className="bg-primary-burgundy hover:bg-burgundy-light text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Product
@@ -729,7 +729,7 @@ const SupplierDashboard = () => {
               </h3>
               <p className="text-sm text-gray-600 mb-2">{product.category}</p>
               <div className="flex items-center justify-between">
-                <span className="text-lg font-bold text-coral-main">
+                <span className="text-lg font-bold text-primary-burgundy">
                   ${product.price}
                 </span>
                 <Badge className={getStatusColor(product.status)}>
@@ -831,7 +831,7 @@ const SupplierDashboard = () => {
                 }
               />
               <Button
-                className="w-full bg-coral-main hover:bg-coral-secondary text-white"
+                className="w-full bg-primary-burgundy hover:bg-burgundy-light text-white"
                 onClick={() => {
                   // Handle product save logic here
                   console.log("Saving product:", productForm);
@@ -857,7 +857,7 @@ const SupplierDashboard = () => {
             setCategoryForm({ name: "", description: "" });
             setShowCategoryForm(true);
           }}
-          className="bg-coral-main hover:bg-coral-secondary text-white"
+          className="bg-primary-burgundy hover:bg-burgundy-light text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Category
@@ -872,7 +872,7 @@ const SupplierDashboard = () => {
           >
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <Package2 className="w-8 h-8 text-coral-main" />
+                <Package2 className="w-8 h-8 text-primary-burgundy" />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm">
@@ -948,7 +948,7 @@ const SupplierDashboard = () => {
                 className="w-full p-2 border border-gray-200 rounded-md h-20 resize-none"
               />
               <Button
-                className="w-full bg-coral-main hover:bg-coral-secondary text-white"
+                className="w-full bg-primary-burgundy hover:bg-burgundy-light text-white"
                 onClick={() => {
                   // Handle category save logic here
                   console.log("Saving category:", categoryForm);
@@ -1021,7 +1021,7 @@ const SupplierDashboard = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {order.items}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-coral-main">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-burgundy">
                       ${order.total}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -1137,7 +1137,7 @@ const SupplierDashboard = () => {
               {/* Order Header Info */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 bg-gray-50 rounded-lg">
                 <div>
-                  <h4 className="font-semibold mb-2 text-coral-main">
+                  <h4 className="font-semibold mb-2 text-primary-burgundy">
                     Customer Information
                   </h4>
                   <div className="space-y-1 text-sm">
@@ -1153,7 +1153,7 @@ const SupplierDashboard = () => {
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2 text-coral-main">
+                  <h4 className="font-semibold mb-2 text-primary-burgundy">
                     Delivery Address
                   </h4>
                   <div className="space-y-1 text-sm">
@@ -1167,7 +1167,7 @@ const SupplierDashboard = () => {
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2 text-coral-main">
+                  <h4 className="font-semibold mb-2 text-primary-burgundy">
                     Order Summary
                   </h4>
                   <div className="space-y-1 text-sm">
@@ -1179,7 +1179,7 @@ const SupplierDashboard = () => {
                     </p>
                     <p>
                       <strong>Total:</strong>{" "}
-                      <span className="text-coral-main font-semibold">
+                      <span className="text-primary-burgundy font-semibold">
                         ${selectedOrder.total}
                       </span>
                     </p>
@@ -1218,8 +1218,8 @@ const SupplierDashboard = () => {
               </div>
 
               {/* Order Items - Detailed Packing List */}
-              <div className="border-2 border-coral-main rounded-lg p-4 bg-coral-whisper/20">
-                <h4 className="font-semibold mb-4 text-coral-main flex items-center">
+              <div className="border-2 border-primary-burgundy rounded-lg p-4 bg-gold-whisper/20">
+                <h4 className="font-semibold mb-4 text-primary-burgundy flex items-center">
                   📋 Order Items - Packing Checklist
                 </h4>
                 <div className="space-y-4">
@@ -1251,7 +1251,7 @@ const SupplierDashboard = () => {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-coral-main">
+                          <p className="font-semibold text-primary-burgundy">
                             Qty: {item.quantity}
                           </p>
                           <p className="text-sm text-gray-600">
@@ -1298,7 +1298,7 @@ const SupplierDashboard = () => {
                             onChange={() =>
                               toggleItemPacked(selectedOrder.id, item._id)
                             }
-                            className="w-4 h-4 text-coral-main border-gray-300 rounded focus:ring-coral-main"
+                            className="w-4 h-4 text-primary-burgundy border-gray-300 rounded focus:ring-primary-burgundy"
                           />
                           <label
                             htmlFor={`item-${item._id}`}
@@ -1482,7 +1482,7 @@ const SupplierDashboard = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {customer.orders}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-coral-main">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-burgundy">
                       ${customer.totalSpent}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -1528,7 +1528,7 @@ const SupplierDashboard = () => {
             key={message.id}
             className={`cursor-pointer transition-all ${
               !message.isRead
-                ? "border-coral-main bg-coral-whisper/20"
+                ? "border-primary-burgundy bg-gold-whisper/20"
                 : "hover:shadow-md"
             }`}
           >
@@ -1540,7 +1540,7 @@ const SupplierDashboard = () => {
                       {message.customerName}
                     </h4>
                     {!message.isRead && (
-                      <Badge className="bg-coral-main text-white text-xs">
+                      <Badge className="bg-primary-burgundy text-white text-xs">
                         New
                       </Badge>
                     )}
@@ -1589,7 +1589,7 @@ const SupplierDashboard = () => {
                         className={`inline-block p-3 rounded-lg max-w-xs ${
                           message.isFromCustomer
                             ? "bg-gray-100 text-gray-900"
-                            : "bg-coral-main text-white"
+                            : "bg-primary-burgundy text-white"
                         }`}
                       >
                         <p className="text-sm">{message.message}</p>
@@ -1597,7 +1597,7 @@ const SupplierDashboard = () => {
                           className={`text-xs mt-1 ${
                             message.isFromCustomer
                               ? "text-gray-500"
-                              : "text-coral-100"
+                              : "text-primary-gold"
                           }`}
                         >
                           {message.timestamp}
@@ -1621,7 +1621,7 @@ const SupplierDashboard = () => {
                   className="flex-1"
                 />
                 <Button
-                  className="bg-coral-main hover:bg-coral-secondary text-white"
+                  className="bg-primary-burgundy hover:bg-burgundy-light text-white"
                   onClick={() => {
                     // Handle send message
                     console.log("Sending message:", newMessage);
@@ -1676,7 +1676,7 @@ const SupplierDashboard = () => {
                       {bulkOrder.status.charAt(0).toUpperCase() +
                         bulkOrder.status.slice(1)}
                     </Badge>
-                    <p className="text-sm text-coral-main font-semibold mt-1">
+                    <p className="text-sm text-primary-burgundy font-semibold mt-1">
                       ${bulkOrder.potentialValue.toFixed(2)} potential
                     </p>
                   </div>
@@ -1915,7 +1915,7 @@ const SupplierDashboard = () => {
       <Sidebar className="border-r border-gray-200">
         <SidebarHeader className="border-b border-gray-200 p-6">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-coral-main rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-primary-burgundy rounded-lg flex items-center justify-center">
               <Package className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -1940,7 +1940,7 @@ const SupplierDashboard = () => {
                       <item.icon className="w-4 h-4" />
                       <span>{item.title}</span>
                       {item.badge && item.badge > 0 && (
-                        <Badge className="ml-auto bg-coral-main text-white text-xs">
+                        <Badge className="ml-auto bg-primary-burgundy text-white text-xs">
                           {item.badge}
                         </Badge>
                       )}
@@ -1982,7 +1982,7 @@ const SupplierDashboard = () => {
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="flex items-center space-x-2">
-                  <Package className="w-5 h-5 text-coral-main" />
+                  <Package className="w-5 h-5 text-primary-burgundy" />
                   <span>Order Tracking - {selectedOrderForTracking.id}</span>
                 </DialogTitle>
               </DialogHeader>
@@ -1991,7 +1991,7 @@ const SupplierDashboard = () => {
                 {/* Order Summary */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
                   <div>
-                    <h4 className="font-semibold mb-2 text-coral-main">
+                    <h4 className="font-semibold mb-2 text-primary-burgundy">
                       Customer
                     </h4>
                     <p className="text-sm">
@@ -2005,7 +2005,7 @@ const SupplierDashboard = () => {
                     </p>
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2 text-coral-main">
+                    <h4 className="font-semibold mb-2 text-primary-burgundy">
                       Order Details
                     </h4>
                     <p className="text-sm">
@@ -2019,7 +2019,7 @@ const SupplierDashboard = () => {
                     </p>
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2 text-coral-main">
+                    <h4 className="font-semibold mb-2 text-primary-burgundy">
                       Status
                     </h4>
                     <Badge
@@ -2179,7 +2179,7 @@ const SupplierDashboard = () => {
                                   item._id
                                 )
                               }
-                              className="bg-coral-main hover:bg-coral-secondary text-white"
+                              className="bg-primary-burgundy hover:bg-burgundy-light text-white"
                             >
                               Mark Packed
                             </Button>

@@ -5,89 +5,76 @@
 
 @layer base {
   :root {
-    /* Coral/Salmon color palette from the provided image */
-    --coral-main: 5 71% 62%;
-    /* #EF6351 - Primary coral */
-    --coral-secondary: 9 76% 70%;
-    /* #F38375 - Secondary coral */
-    --coral-light: 12 82% 78%;
-    /* #F7A399 - Light coral */
-    --coral-soft: 14 88% 86%;
-    /* #FBC3BC - Soft coral */
-    --coral-whisper: 16 94% 94%;
-    /* #FFE3E0 - Very light coral */
+    /* Trevo-1 color palette - warm burgundy to golden yellow gradient */
+    --primary-burgundy: 348 88% 29%;
+    /* #780116 - Deep burgundy */
+    --primary-gold: 42 91% 59%;
+    /* #F7B538 - Bright golden yellow */
+    --primary-orange: 25 68% 51%;
+    /* #DB7C26 - Warm orange */
+    --primary-red-orange: 15 66% 51%;
+    /* #D8572A - Red-orange */
+    --primary-red: 4 65% 47%;
+    /* #C32F27 - Bright red */
 
-    /* Clean foundation colors */
+    /* Lighter variations for backgrounds and accents */
+    --burgundy-light: 348 88% 40%;
+    /* Lighter burgundy */
+    --burgundy-soft: 348 60% 85%;
+    /* Very light burgundy */
+    --burgundy-whisper: 348 40% 95%;
+    /* Whisper burgundy */
+    --gold-light: 42 85% 70%;
+    /* Light gold */
+    --gold-soft: 42 70% 85%;
+    /* Soft gold */
+    --gold-whisper: 42 50% 95%;
+    /* Whisper gold */
+
+    /* Clean foundation colors remain the same */
     --white: 0 0% 100%;
-    /* Pure white */
     --black: 0 0% 0%;
-    /* Pure black */
     --gray-50: 0 0% 98%;
-    /* Very light gray */
     --gray-100: 0 0% 95%;
-    /* Light gray */
     --gray-200: 0 0% 90%;
-    /* Medium light gray */
     --gray-300: 0 0% 83%;
-    /* Medium gray */
     --gray-400: 0 0% 64%;
-    /* Medium dark gray */
     --gray-500: 0 0% 54%;
-    /* Dark gray */
     --gray-600: 0 0% 42%;
-    /* Darker gray */
     --gray-700: 0 0% 32%;
-    /* Very dark gray */
     --gray-800: 0 0% 20%;
-    /* Almost black */
     --gray-900: 0 0% 9%;
-    /* Near black */
 
-    /* Semantic color mapping */
+    /* Update semantic color mapping to use trevo-1 palette */
     --background: var(--white);
     --foreground: var(--gray-900);
     --card: var(--white);
     --card-foreground: var(--gray-900);
     --popover: var(--white);
     --popover-foreground: var(--gray-900);
-    --primary: var(--coral-main);
+    --primary: var(--primary-burgundy);
     --primary-foreground: var(--white);
-    --secondary: var(--coral-whisper);
+    --secondary: var(--gold-whisper);
     --secondary-foreground: var(--gray-700);
     --muted: var(--gray-100);
     --muted-foreground: var(--gray-500);
-    --accent: var(--coral-light);
+    --accent: var(--primary-gold);
     --accent-foreground: var(--gray-900);
     --destructive: 0 84% 60%;
     --destructive-foreground: var(--white);
     --border: var(--gray-200);
     --input: var(--white);
-    --ring: var(--coral-main);
+    --ring: var(--primary-burgundy);
     --radius: 0.375rem;
 
-    /* Japanese spacing system (based on tatami proportions) */
+    /* Japanese spacing system remains the same */
     --spacing-xs: 0.25rem;
-    /* 4px */
     --spacing-sm: 0.5rem;
-    /* 8px */
     --spacing-md: 1rem;
-    /* 16px */
     --spacing-lg: 1.5rem;
-    /* 24px */
     --spacing-xl: 2rem;
-    /* 32px */
     --spacing-2xl: 3rem;
-    /* 48px */
     --spacing-3xl: 4rem;
-    /* 64px */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
@@ -108,14 +95,6 @@
     --border: 0 0% 15%;
     --input: 0 0% 15%;
     --ring: var(--sakura-secondary);
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -169,270 +148,128 @@
 
 @layer components {
 
-  /* Coral color classes */
-  .bg-coral-main {
-    background-color: hsl(var(--coral-main));
+  /* Trevo-1 color classes */
+  .bg-primary-burgundy {
+    background-color: hsl(var(--primary-burgundy));
   }
 
-  .bg-coral-secondary {
-    background-color: hsl(var(--coral-secondary));
+  .bg-primary-gold {
+    background-color: hsl(var(--primary-gold));
   }
 
-  .bg-coral-light {
-    background-color: hsl(var(--coral-light));
+  .bg-primary-orange {
+    background-color: hsl(var(--primary-orange));
   }
 
-  .bg-coral-soft {
-    background-color: hsl(var(--coral-soft));
+  .bg-primary-red-orange {
+    background-color: hsl(var(--primary-red-orange));
   }
 
-  .bg-coral-whisper {
-    background-color: hsl(var(--coral-whisper));
+  .bg-primary-red {
+    background-color: hsl(var(--primary-red));
   }
 
-  .text-coral-main {
-    color: hsl(var(--coral-main));
+  .bg-burgundy-light {
+    background-color: hsl(var(--burgundy-light));
   }
 
-  .text-coral-secondary {
-    color: hsl(var(--coral-secondary));
+  .bg-burgundy-soft {
+    background-color: hsl(var(--burgundy-soft));
   }
 
-  .text-coral-light {
-    color: hsl(var(--coral-light));
+  .bg-burgundy-whisper {
+    background-color: hsl(var(--burgundy-whisper));
   }
 
-  .text-coral-soft {
-    color: hsl(var(--coral-soft));
+  .bg-gold-light {
+    background-color: hsl(var(--gold-light));
   }
 
-  .text-coral-whisper {
-    color: hsl(var(--coral-whisper));
+  .bg-gold-soft {
+    background-color: hsl(var(--gold-soft));
   }
 
-  .border-coral-main {
-    border-color: hsl(var(--coral-main));
+  .bg-gold-whisper {
+    background-color: hsl(var(--gold-whisper));
   }
 
-  .border-coral-secondary {
-    border-color: hsl(var(--coral-secondary));
+  .text-primary-burgundy {
+    color: hsl(var(--primary-burgundy));
   }
 
-  .border-coral-light {
-    border-color: hsl(var(--coral-light));
+  .text-primary-gold {
+    color: hsl(var(--primary-gold));
   }
 
-  .border-coral-soft {
-    border-color: hsl(var(--coral-soft));
+  .text-primary-orange {
+    color: hsl(var(--primary-orange));
   }
 
-  .border-coral-whisper {
-    border-color: hsl(var(--coral-whisper));
+  .text-primary-red-orange {
+    color: hsl(var(--primary-red-orange));
   }
 
-  /* Gray color classes */
-  .bg-gray-50 {
-    background-color: hsl(var(--gray-50));
+  .text-primary-red {
+    color: hsl(var(--primary-red));
   }
 
-  .bg-gray-100 {
-    background-color: hsl(var(--gray-100));
+  .text-burgundy-light {
+    color: hsl(var(--burgundy-light));
   }
 
-  .bg-gray-200 {
-    background-color: hsl(var(--gray-200));
+  .text-gold-light {
+    color: hsl(var(--gold-light));
   }
 
-  .bg-gray-300 {
-    background-color: hsl(var(--gray-300));
+  .border-primary-burgundy {
+    border-color: hsl(var(--primary-burgundy));
   }
 
-  .bg-gray-400 {
-    background-color: hsl(var(--gray-400));
+  .border-primary-gold {
+    border-color: hsl(var(--primary-gold));
   }
 
-  .bg-gray-500 {
-    background-color: hsl(var(--gray-500));
+  .border-primary-orange {
+    border-color: hsl(var(--primary-orange));
   }
 
-  .bg-gray-600 {
-    background-color: hsl(var(--gray-600));
+  .border-burgundy-soft {
+    border-color: hsl(var(--burgundy-soft));
   }
 
-  .bg-gray-700 {
-    background-color: hsl(var(--gray-700));
+  .border-gold-soft {
+    border-color: hsl(var(--gold-soft));
   }
 
-  .bg-gray-800 {
-    background-color: hsl(var(--gray-800));
-  }
-
-  .bg-gray-900 {
-    background-color: hsl(var(--gray-900));
-  }
-
-  .text-gray-50 {
-    color: hsl(var(--gray-50));
-  }
-
-  .text-gray-100 {
-    color: hsl(var(--gray-100));
-  }
-
-  .text-gray-200 {
-    color: hsl(var(--gray-200));
-  }
-
-  .text-gray-300 {
-    color: hsl(var(--gray-300));
-  }
-
-  .text-gray-400 {
-    color: hsl(var(--gray-400));
-  }
-
-  .text-gray-500 {
-    color: hsl(var(--gray-500));
-  }
-
-  .text-gray-600 {
-    color: hsl(var(--gray-600));
-  }
-
-  .text-gray-700 {
-    color: hsl(var(--gray-700));
-  }
-
-  .text-gray-800 {
-    color: hsl(var(--gray-800));
-  }
-
-  .text-gray-900 {
-    color: hsl(var(--gray-900));
-  }
-
-  .border-gray-100 {
-    border-color: hsl(var(--gray-100));
-  }
-
-  .border-gray-200 {
-    border-color: hsl(var(--gray-200));
-  }
-
-  .border-gray-300 {
-    border-color: hsl(var(--gray-300));
-  }
-
-  .border-gray-400 {
-    border-color: hsl(var(--gray-400));
-  }
-
-  .border-gray-500 {
-    border-color: hsl(var(--gray-500));
-  }
-
-  .border-gray-600 {
-    border-color: hsl(var(--gray-600));
-  }
-
-  .border-gray-700 {
-    border-color: hsl(var(--gray-700));
-  }
-
-  .border-gray-800 {
-    border-color: hsl(var(--gray-800));
-  }
-
-  .border-gray-900 {
-    border-color: hsl(var(--gray-900));
-  }
-
-  .shadow-soft {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  }
-
-  /* Zen container with ma (negative space) principles */
-  .zen-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-    padding-top: var(--spacing-2xl);
-    padding-bottom: var(--spacing-2xl);
-  }
-
-  .zen-section {
-    @apply mb-16;
-    padding: var(--spacing-3xl) 0;
-  }
-
-  /* Japanese-inspired cards with subtle elevation */
-  .zen-card {
-    @apply bg-card rounded-lg shadow-sm border border-border;
-    padding: var(--spacing-lg);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-  }
-
-  .zen-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px -8px hsl(var(--sakura-main) / 0.15);
-  }
-
-  .zen-card-sakura {
-    @apply zen-card;
-    background: hsl(var(--sakura-whisper));
-    border-color: hsl(var(--sakura-soft));
-  }
-
-  .zen-card-accent {
-    @apply zen-card;
-    background: hsl(var(--sakura-light) / 0.3);
-    border-color: hsl(var(--sakura-light));
-  }
-
-  /* Zen buttons with Japanese aesthetics */
-  .zen-btn {
-    @apply inline-flex items-center justify-center rounded-md font-medium transition-all duration-200;
-    padding: var(--spacing-sm) var(--spacing-lg);
-    border: 1px solid transparent;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
+  /* Update zen button styles */
   .zen-btn-primary {
     @apply zen-btn;
-    background: hsl(var(--coral-main));
+    background: hsl(var(--primary-burgundy));
     color: hsl(var(--white));
-    border-color: hsl(var(--coral-main));
+    border-color: hsl(var(--primary-burgundy));
   }
 
   .zen-btn-primary:hover {
-    background: hsl(var(--coral-secondary));
+    background: hsl(var(--burgundy-light));
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px hsl(var(--coral-main) / 0.4);
+    box-shadow: 0 4px 12px hsl(var(--primary-burgundy) / 0.4);
   }
 
   .zen-btn-secondary {
     @apply zen-btn;
-    background: hsl(var(--coral-whisper));
+    background: hsl(var(--gold-whisper));
     color: hsl(var(--gray-700));
-    border-color: hsl(var(--coral-soft));
+    border-color: hsl(var(--gold-soft));
   }
 
   .zen-btn-secondary:hover {
-    background: hsl(var(--coral-soft));
+    background: hsl(var(--gold-soft));
     transform: translateY(-1px);
   }
 
-  .zen-btn-ghost {
-    @apply zen-btn;
-    background: transparent;
-    color: hsl(var(--gray-700));
-    border-color: hsl(var(--border));
-  }
-
   .zen-btn-ghost:hover {
-    background: hsl(var(--coral-whisper));
-    border-color: hsl(var(--coral-light));
+    background: hsl(var(--gold-whisper));
+    border-color: hsl(var(--primary-gold));
   }
 
   /* Rest of your existing CSS components remain the same */
@@ -444,8 +281,8 @@
   }
 
   .zen-input:focus {
-    border-color: hsl(var(--coral-main));
-    box-shadow: 0 0 0 3px hsl(var(--coral-main) / 0.1);
+    border-color: hsl(var(--primary-burgundy));
+    box-shadow: 0 0 0 3px hsl(var(--primary-burgundy) / 0.1);
   }
 
   .zen-input::placeholder {
@@ -465,13 +302,13 @@
   }
 
   .zen-nav-item:hover {
-    color: hsl(var(--coral-main));
-    background: hsl(var(--coral-whisper));
+    color: hsl(var(--primary-burgundy));
+    background: hsl(var(--gold-whisper));
   }
 
   .zen-nav-item.active {
-    color: hsl(var(--coral-main));
-    background: hsl(var(--coral-whisper));
+    color: hsl(var(--primary-burgundy));
+    background: hsl(var(--gold-whisper));
   }
 
   .zen-nav-item.active::after {
@@ -482,7 +319,7 @@
     transform: translateX(-50%);
     width: 20px;
     height: 2px;
-    background: hsl(var(--coral-main));
+    background: hsl(var(--primary-burgundy));
     border-radius: 1px;
   }
 
@@ -498,14 +335,14 @@
   }
 
   .zen-sidebar-item:hover {
-    background: hsl(var(--coral-whisper));
-    color: hsl(var(--coral-main));
+    background: hsl(var(--gold-whisper));
+    color: hsl(var(--primary-burgundy));
   }
 
   .zen-sidebar-item.active {
-    background: hsl(var(--coral-light) / 0.5);
-    color: hsl(var(--coral-main));
-    border-left: 3px solid hsl(var(--coral-main));
+    background: hsl(var(--gold-light) / 0.5);
+    color: hsl(var(--primary-burgundy));
+    border-left: 3px solid hsl(var(--primary-burgundy));
     padding-left: calc(var(--spacing-sm) + 3px);
   }
 
@@ -527,7 +364,7 @@
   }
 
   .zen-product-card:hover {
-    background: hsl(var(--coral-whisper));
+    background: hsl(var(--gold-whisper));
   }
 
   .zen-product-image {
@@ -541,13 +378,13 @@
 
   .zen-metric-card {
     @apply zen-card text-center;
-    background: hsl(var(--coral-whisper));
-    border-color: hsl(var(--coral-soft));
+    background: hsl(var(--gold-whisper));
+    border-color: hsl(var(--gold-soft));
   }
 
   .zen-metric-value {
     @apply text-zen-title font-semibold;
-    color: hsl(var(--coral-main));
+    color: hsl(var(--primary-burgundy));
   }
 
   .zen-metric-label {
@@ -560,9 +397,9 @@
     height: 1px;
     background: linear-gradient(90deg,
         transparent,
-        hsl(var(--sakura-light)) 20%,
-        hsl(var(--sakura-main)) 50%,
-        hsl(var(--sakura-light)) 80%,
+        hsl(var(--primary-gold)) 20%,
+        hsl(var(--primary-burgundy)) 50%,
+        hsl(var(--primary-gold)) 80%,
         transparent);
     margin: var(--spacing-xl) 0;
   }
@@ -573,7 +410,7 @@
 
   .zen-table th {
     @apply px-4 py-3 text-left font-medium border-b border-border;
-    background: hsl(var(--sakura-whisper));
+    background: hsl(var(--gold-whisper));
     color: hsl(var(--hai-700));
   }
 
@@ -583,7 +420,7 @@
   }
 
   .zen-table tr:hover td {
-    background: hsl(var(--sakura-whisper) / 0.5);
+    background: hsl(var(--gold-whisper) / 0.5);
   }
 
   .zen-table tr:nth-child(even) td {
@@ -596,8 +433,8 @@
 
   .zen-badge-primary {
     @apply zen-badge;
-    background: hsl(var(--coral-main) / 0.1);
-    color: hsl(var(--coral-main));
+    background: hsl(var(--primary-burgundy) / 0.1);
+    color: hsl(var(--primary-burgundy));
   }
 
   .zen-badge-secondary {
@@ -652,24 +489,20 @@
     margin: var(--spacing-3xl);
   }
 
-  .zen-bg-sakura-main {
-    background: hsl(var(--sakura-main));
+  .zen-bg-primary {
+    background: hsl(var(--primary-burgundy));
   }
 
-  .zen-bg-sakura-light {
-    background: hsl(var(--sakura-light));
+  .zen-bg-accent {
+    background: hsl(var(--primary-gold));
   }
 
-  .zen-bg-sakura-soft {
-    background: hsl(var(--sakura-soft));
+  .zen-text-primary {
+    color: hsl(var(--primary-burgundy));
   }
 
-  .zen-bg-sakura-whisper {
-    background: hsl(var(--sakura-whisper));
-  }
-
-  .zen-text-sakura {
-    color: hsl(var(--sakura-main));
+  .zen-text-accent {
+    color: hsl(var(--primary-gold));
   }
 
   .zen-text-muted {
@@ -681,11 +514,11 @@
   }
 
   .zen-shadow-soft {
-    box-shadow: 0 4px 6px -1px hsl(var(--sakura-main) / 0.1);
+    box-shadow: 0 4px 6px -1px hsl(var(--primary-burgundy) / 0.1);
   }
 
   .zen-shadow-warm {
-    box-shadow: 0 10px 15px -3px hsl(var(--sakura-main) / 0.2);
+    box-shadow: 0 10px 15px -3px hsl(var(--primary-burgundy) / 0.2);
   }
 
   .zen-glass {

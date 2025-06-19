@@ -168,8 +168,17 @@ const LandingPage = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-coral-main rounded-xl flex items-center justify-center text-white font-bold text-lg">
-                R
+              <div className="w-10 h-10 bg-primary-burgundy rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 512 512"
+                  fill="white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  preserveAspectRatio="xMidYMid meet"
+                >
+                  <path d="M504.1 312.8l-13.7-11.2-13.5-7.1-13.4-2.2-16.3 6.4-13.1 2.6-13.5-6.2-9.6-16.7 4.5-14.5-3.8-15.4-8.6-7.8-6.7-13.2 1.9-11.2-4.8-9.3-7.1-7.3-1.7-13.9 3.6-12.8 4.3-12.3-1.6-8.9-4.7-5.2-8.5-2.5-14.2-2.8-12.7-3.6-12.6-9.6-8.6-14.3-12.5-12.3-15.4-8.5-11.7-2.6-13.8 1.7-14.5-1.2-11.7-4.5-9.7-4.2-13.5-2.3-12.6 1.2-10.8 6.3-8.9 5.6-9.5 1.1-10.4-3.3-9.2-4.4-13.2-4.1-13.5 3.6-13.4 6.2-10.2 6.4-4.4 9.7-1.1 12.6 3.2 13.7 1.3 13.4 2.6 12.9-2.1 12.6-4.7 13.6-2.8 14.5 1.3 10.9 4.6 9.4 7.6 7.2 9.7 7.1 5.4 8.8 3.2 12.1-.9 13.7-4.2 13.4-5.3 13.7-6.5 13.8-6.9 13.1-1.1 10.3 4.2 10.6 10.4 8.9 9.2 6.6 6.9 7.5 5.4 8.3 8.2 7.1 11.4 4.2 12.5 4.3 12.7 2.1 10.5-4.1 10.8-7.6 10.7-5.9 11.3-3.1 13.4 2.7 14.1 6.3 13.6 5.6 14.2-3.8 12.3-5.7 14.6-1.1 13.7-1.8 11.3-8.3 11.6-6.3 13.9 2.2 13.2 7.1 13.8 11.2z" />
+                </svg>
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">
@@ -183,25 +192,25 @@ const LandingPage = () => {
             <div className="hidden md:flex items-center space-x-8">
               <a
                 href="#features"
-                className="text-gray-600 hover:text-coral-main transition-colors"
+                className="text-gray-600 hover:text-primary-burgundy transition-colors"
               >
                 Features
               </a>
               <a
                 href="#products"
-                className="text-gray-600 hover:text-coral-main transition-colors"
+                className="text-gray-600 hover:text-primary-burgundy transition-colors"
               >
                 Products
               </a>
               <a
                 href="#suppliers"
-                className="text-gray-600 hover:text-coral-main transition-colors"
+                className="text-gray-600 hover:text-primary-burgundy transition-colors"
               >
                 Suppliers
               </a>
               <a
                 href="#about"
-                className="text-gray-600 hover:text-coral-main transition-colors"
+                className="text-gray-600 hover:text-primary-burgundy transition-colors"
               >
                 About
               </a>
@@ -212,13 +221,13 @@ const LandingPage = () => {
               <Button
                 variant="outline"
                 onClick={() => handleRoleSelection("supplier")}
-                className="border-coral-main text-coral-main hover:bg-coral-whisper"
+                className="border-primary-burgundy text-primary-burgundy hover:bg-gold-whisper"
               >
                 Become a Supplier
               </Button>
               <Button
                 onClick={() => handleRoleSelection("customer")}
-                className="bg-coral-main hover:bg-coral-secondary text-white"
+                className="bg-primary-burgundy hover:bg-burgundy-light text-white"
               >
                 Start Shopping
               </Button>
@@ -228,7 +237,7 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-20 bg-gradient-to-br from-coral-whisper via-white to-coral-soft">
+      <section className="pt-24 pb-20 bg-gradient-to-br from-gold-whisper via-white to-gold-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -239,9 +248,9 @@ const LandingPage = () => {
                   : "opacity-0 -translate-x-8"
               }`}
             >
-              <div className="inline-flex items-center space-x-2 bg-coral-main/10 px-4 py-2 rounded-full mb-6">
-                <Award className="w-4 h-4 text-coral-main" />
-                <span className="text-sm font-medium text-coral-main">
+              <div className="inline-flex items-center space-x-2 bg-primary-burgundy/10 px-4 py-2 rounded-full mb-6">
+                <Award className="w-4 h-4 text-primary-burgundy" />
+                <span className="text-sm font-medium text-primary-burgundy">
                   Trusted by 10,000+ customers
                 </span>
               </div>
@@ -249,7 +258,7 @@ const LandingPage = () => {
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
                 Discover Rwanda's
                 <br />
-                <span className="text-coral-main">Finest Treasures</span>
+                <span className="text-primary-burgundy">Finest Treasures</span>
               </h1>
 
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
@@ -262,12 +271,12 @@ const LandingPage = () => {
               {/* Role Selection Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <Card
-                  className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-coral-main group"
+                  className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary-burgundy group"
                   onClick={() => handleRoleSelection("customer")}
                 >
                   <CardContent className="p-6 text-center">
-                    <div className="w-12 h-12 bg-coral-whisper rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-coral-main transition-colors">
-                      <Package className="w-6 h-6 text-coral-main group-hover:text-white" />
+                    <div className="w-12 h-12 bg-gold-whisper rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-primary-burgundy transition-colors">
+                      <Package className="w-6 h-6 text-primary-burgundy group-hover:text-white" />
                     </div>
                     <h3 className="font-semibold text-gray-900 mb-2">
                       I'm a Customer
@@ -279,12 +288,12 @@ const LandingPage = () => {
                 </Card>
 
                 <Card
-                  className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-coral-main group"
+                  className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary-burgundy group"
                   onClick={() => handleRoleSelection("supplier")}
                 >
                   <CardContent className="p-6 text-center">
-                    <div className="w-12 h-12 bg-coral-whisper rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-coral-main transition-colors">
-                      <Users className="w-6 h-6 text-coral-main group-hover:text-white" />
+                    <div className="w-12 h-12 bg-gold-whisper rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-primary-burgundy transition-colors">
+                      <Users className="w-6 h-6 text-primary-burgundy group-hover:text-white" />
                     </div>
                     <h3 className="font-semibold text-gray-900 mb-2">
                       I'm a Supplier
@@ -296,12 +305,12 @@ const LandingPage = () => {
                 </Card>
 
                 <Card
-                  className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-coral-main group"
+                  className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary-burgundy group"
                   onClick={() => handleRoleSelection("admin")}
                 >
                   <CardContent className="p-6 text-center">
-                    <div className="w-12 h-12 bg-coral-whisper rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-coral-main transition-colors">
-                      <Shield className="w-6 h-6 text-coral-main group-hover:text-white" />
+                    <div className="w-12 h-12 bg-gold-whisper rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-primary-burgundy transition-colors">
+                      <Shield className="w-6 h-6 text-primary-burgundy group-hover:text-white" />
                     </div>
                     <h3 className="font-semibold text-gray-900 mb-2">
                       I'm an Admin
@@ -362,10 +371,10 @@ const LandingPage = () => {
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-3xl font-bold text-coral-main">
+                        <span className="text-3xl font-bold text-primary-burgundy">
                           $45.99
                         </span>
-                        <Button className="bg-coral-main hover:bg-coral-secondary text-white">
+                        <Button className="bg-primary-burgundy hover:bg-burgundy-light text-white">
                           Add to Cart
                         </Button>
                       </div>
@@ -374,10 +383,10 @@ const LandingPage = () => {
                 </Card>
 
                 {/* Floating Elements */}
-                <div className="absolute -top-4 -right-4 w-20 h-20 bg-coral-main rounded-full flex items-center justify-center text-white font-bold text-lg animate-bounce">
+                <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary-burgundy rounded-full flex items-center justify-center text-white font-bold text-lg animate-bounce">
                   🎨
                 </div>
-                <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-coral-secondary rounded-full flex items-center justify-center text-white font-bold animate-pulse">
+                <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-burgundy-light rounded-full flex items-center justify-center text-white font-bold animate-pulse">
                   ☕
                 </div>
               </div>
@@ -401,7 +410,7 @@ const LandingPage = () => {
                     : "opacity-0 translate-y-4"
                 }`}
               >
-                <div className="w-16 h-16 bg-coral-main rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-primary-burgundy rounded-full flex items-center justify-center mx-auto mb-4">
                   <stat.icon className="w-8 h-8 text-white" />
                 </div>
                 <div className="text-3xl font-bold text-gray-900 mb-2">
@@ -443,7 +452,7 @@ const LandingPage = () => {
                     <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">
                       {product.image}
                     </div>
-                    <h3 className="font-bold text-gray-900 mb-2 group-hover:text-coral-main transition-colors">
+                    <h3 className="font-bold text-gray-900 mb-2 group-hover:text-primary-burgundy transition-colors">
                       {product.name}
                     </h3>
                     <p className="text-sm text-gray-600 mb-3">
@@ -466,7 +475,7 @@ const LandingPage = () => {
                         ({product.reviews})
                       </span>
                     </div>
-                    <div className="text-2xl font-bold text-coral-main">
+                    <div className="text-2xl font-bold text-primary-burgundy">
                       ${product.price}
                     </div>
                   </div>
@@ -478,7 +487,7 @@ const LandingPage = () => {
           <div className="text-center mt-12">
             <Button
               onClick={() => handleRoleSelection("customer")}
-              className="bg-coral-main hover:bg-coral-secondary text-white px-8 py-3"
+              className="bg-primary-burgundy hover:bg-burgundy-light text-white px-8 py-3"
             >
               View All Products <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
@@ -511,14 +520,14 @@ const LandingPage = () => {
                 onClick={() => handleRoleSelection("customer")}
               >
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 bg-coral-whisper rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-coral-main transition-colors">
+                  <div className="w-16 h-16 bg-gold-whisper rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary-burgundy transition-colors">
                     {typeof category.icon === "string" ? (
                       <span className="text-2xl">{category.icon}</span>
                     ) : (
-                      <category.icon className="w-8 h-8 text-coral-main group-hover:text-white" />
+                      <category.icon className="w-8 h-8 text-primary-burgundy group-hover:text-white" />
                     )}
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 group-hover:text-coral-main transition-colors">
+                  <h3 className="font-bold text-gray-900 mb-2 group-hover:text-primary-burgundy transition-colors">
                     {category.name}
                   </h3>
                   <p className="text-sm text-gray-600">{category.count}</p>
@@ -557,7 +566,7 @@ const LandingPage = () => {
                     {supplier.image}
                   </div>
                   <div className="flex items-center justify-center space-x-2 mb-3">
-                    <h3 className="font-bold text-gray-900 group-hover:text-coral-main transition-colors">
+                    <h3 className="font-bold text-gray-900 group-hover:text-primary-burgundy transition-colors">
                       {supplier.name}
                     </h3>
                     {supplier.verified && (
@@ -607,7 +616,7 @@ const LandingPage = () => {
             <Button
               onClick={() => handleRoleSelection("supplier")}
               variant="outline"
-              className="border-coral-main text-coral-main hover:bg-coral-whisper px-8 py-3"
+              className="border-primary-burgundy text-primary-burgundy hover:bg-gold-whisper px-8 py-3"
             >
               Become a Supplier <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
@@ -649,7 +658,7 @@ const LandingPage = () => {
                     <div className="font-bold text-gray-900">
                       {testimonials[activeTestimonial].name}
                     </div>
-                    <div className="text-coral-main">
+                    <div className="text-primary-burgundy">
                       {testimonials[activeTestimonial].role}
                     </div>
                   </div>
@@ -665,7 +674,7 @@ const LandingPage = () => {
                   onClick={() => setActiveTestimonial(index)}
                   className={`w-3 h-3 rounded-full transition-colors ${
                     index === activeTestimonial
-                      ? "bg-coral-main"
+                      ? "bg-primary-burgundy"
                       : "bg-gray-300"
                   }`}
                 />
@@ -736,8 +745,8 @@ const LandingPage = () => {
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <CardContent className="p-8">
-                  <div className="w-16 h-16 bg-coral-whisper rounded-full flex items-center justify-center mx-auto mb-6">
-                    <feature.icon className="w-8 h-8 text-coral-main" />
+                  <div className="w-16 h-16 bg-gold-whisper rounded-full flex items-center justify-center mx-auto mb-6">
+                    <feature.icon className="w-8 h-8 text-primary-burgundy" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-4">
                     {feature.title}
@@ -753,9 +762,9 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-coral-main to-coral-secondary">
+      <section className="py-20 bg-gradient-to-r from-primary-burgundy to-burgundy-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-white">
+          <div className="text-black">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Ready to Discover Rwanda's Treasures?
             </h2>
@@ -766,14 +775,14 @@ const LandingPage = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 onClick={() => handleRoleSelection("customer")}
-                className="bg-white text-coral-main hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
+                className="bg-white text-primary-burgundy hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
               >
                 Start Shopping Now
               </Button>
               <Button
                 onClick={() => handleRoleSelection("supplier")}
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-coral-main px-8 py-4 text-lg font-semibold"
+                className="border-white text-black hover:bg-white hover:text-primary-burgundy px-8 py-4 text-lg font-semibold"
               >
                 Become a Supplier
               </Button>
@@ -789,7 +798,7 @@ const LandingPage = () => {
             {/* Brand */}
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-coral-main rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                <div className="w-10 h-10 bg-primary-burgundy rounded-xl flex items-center justify-center text-white font-bold text-lg">
                   R
                 </div>
                 <div>
