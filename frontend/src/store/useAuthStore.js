@@ -1,41 +1,40 @@
-import {create} from "zustand"
+import { create } from "zustand"
 import axios from "axios"
 
-const API_URL = " http://localhost:5001/api/users"
-export const useAuthStore = create((set) =>({
+const API_URL = "http://localhost:5001/api/users"
+
+export const useAuthStore = create((set) => ({
   user: null,
-  isLoading:false,
+  isLoading: false,
   error: null,
 
-  signup : async(username,name,email,role,password) =>{
-    set({isLoading:true,error:null});
+  signup: async (username, name, email, role, password) => {
+    set({ isLoading: true, error: null })
 
     try {
-      const response = await axios.post(`${API_URL}/signup`,{
+      const response = await axios.post(`${API_URL}/signup`, {
         username,
         name,
         email,
-        role,
-        password
-      });
+        role, 
+        password,
+      })
 
       set({
         user: response.data.user,
-         isLoading: false
+        isLoading: false,
       })
 
+      return response.data
     } catch (error) {
       set({
-        isLoading:false,
-        error: error.response.data.message || "Error Signing Up"
-      });
+        isLoading: false,
+        error: error.response?.data?.message || "Error Signing Up",
+      })
 
-      throw error;
-      
-      
+      throw error
     }
-  }
-
+  },
 
   
 }))
