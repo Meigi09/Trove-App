@@ -1,231 +1,350 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
   ShoppingCart,
-  Search,
+  Heart,
+  MessageSquare,
+  Share2,
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  X,
   Plus,
   Minus,
-  X,
-  Star,
-  Heart,
   Eye,
-  Package,
+  Award,
+  Search,
+  Bookmark,
+  Gift,
   Truck,
   Shield,
-  MessageSquare,
-  Send,
-  MapPin,
-  Phone,
-  Mail,
-  Award,
-  ChevronRight,
+  CreditCard,
+  Home,
+  UserCircle,
+  Target,
+  Flame,
+  Trophy,
+  Coins,
+  Gamepad2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const CustomerPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [cart, setCart] = useState([]);
-  const [showCart, setShowCart] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [activeView, setActiveView] = useState("marketplace"); // marketplace, suppliers, products
-  const [selectedSupplier, setSelectedSupplier] = useState(null);
-  const [showSupplierProfile, setShowSupplierProfile] = useState(false);
+  const [currentProductIndex, setCurrentProductIndex] = useState(0);
   const [showProductDetails, setShowProductDetails] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [showChat, setShowChat] = useState(false);
-  const [chatSupplier, setChatSupplier] = useState(null);
-  const [newMessage, setNewMessage] = useState("");
-  const [showReviewForm, setShowReviewForm] = useState(false);
-  const [reviewTarget, setReviewTarget] = useState(null); // { type: 'product' | 'supplier', id: string }
-  const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
-  const [wishlist, setWishlist] = useState([]);
+  const [showSupplierInfo, setShowSupplierInfo] = useState(false);
+  const [showCart, setShowCart] = useState(false);
   const [showWishlist, setShowWishlist] = useState(false);
   const [showOrderTracking, setShowOrderTracking] = useState(false);
-  const [showBulkOrderForm, setShowBulkOrderForm] = useState(false);
-  const [bulkOrderProduct, setBulkOrderProduct] = useState(null);
-  const [bulkOrderForm, setBulkOrderForm] = useState({
-    quantity: "",
-    targetPrice: "",
-    deadline: "",
-    notes: "",
-    contactMethod: "email",
+  const [showChat, setShowChat] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [showGameCenter, setShowGameCenter] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [likedProducts, setLikedProducts] = useState(new Set());
+  const [followedSuppliers, setFollowedSuppliers] = useState(new Set());
+  const [viewHistory, setViewHistory] = useState([]);
+  const [activeTab, setActiveTab] = useState("home");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+
+  // Minigames State
+  const [showMinigames, setShowMinigames] = useState(false);
+  const [activeMinigame, setActiveMinigame] = useState(null);
+  const [memoryGame, setMemoryGame] = useState({
+    cards: [],
+    flipped: [],
+    matched: [],
+    moves: 0,
+    score: 0,
+    gameActive: false,
   });
-  const [customerOrders] = useState([
+  const [spinWheel, setSpinWheel] = useState({
+    spinning: false,
+    result: null,
+    angle: 0,
+  });
+  const [quickTap, setQuickTap] = useState({
+    active: false,
+    score: 0,
+    timeLeft: 30,
+    targets: [],
+  });
+
+  // Minigame data
+  const minigames = [
     {
-      id: "ORD-2024-001",
-      supplierId: "sup1",
-      supplierName: "Kigali Artisan Collective",
-      items: [
-        { name: "Handwoven Agaseke Basket", quantity: 2, price: 45.99 },
-        { name: "Imigongo Art Painting", quantity: 1, price: 125.0 },
-      ],
-      total: 216.98,
-      status: "processing",
-      orderDate: "2024-01-15",
-      estimatedDelivery: "2024-01-22",
-      trackingNumber: "RT2024001",
-      statusHistory: [
-        {
-          status: "placed",
-          date: "2024-01-15 10:30",
-          description: "Order placed successfully",
-        },
-        {
-          status: "confirmed",
-          date: "2024-01-15 11:15",
-          description: "Order confirmed by supplier",
-        },
-        {
-          status: "processing",
-          date: "2024-01-16 09:00",
-          description: "Items being prepared for shipment",
-        },
-      ],
+      id: "memory",
+      name: "Product Memory",
+      description: "Match product pairs to win coins!",
+      icon: "🧠",
+      reward: "50-200 coins",
+      difficulty: "Easy",
     },
     {
-      id: "ORD-2024-002",
-      supplierId: "sup2",
-      supplierName: "Thousand Hills Coffee",
-      items: [{ name: "Rwandan Coffee Beans", quantity: 3, price: 28.5 }],
-      total: 85.5,
-      status: "shipped",
-      orderDate: "2024-01-10",
-      estimatedDelivery: "2024-01-17",
-      trackingNumber: "RT2024002",
-      statusHistory: [
-        {
-          status: "placed",
-          date: "2024-01-10 14:20",
-          description: "Order placed successfully",
-        },
-        {
-          status: "confirmed",
-          date: "2024-01-10 15:30",
-          description: "Order confirmed by supplier",
-        },
-        {
-          status: "processing",
-          date: "2024-01-11 08:00",
-          description: "Items being prepared for shipment",
-        },
-        {
-          status: "shipped",
-          date: "2024-01-12 16:45",
-          description: "Package shipped via Rwanda Post",
-        },
-      ],
+      id: "spin",
+      name: "Lucky Spin",
+      description: "Spin the wheel for amazing rewards!",
+      icon: "🎰",
+      reward: "10-500 coins",
+      difficulty: "Luck",
+    },
+    {
+      id: "quicktap",
+      name: "Coin Rush",
+      description: "Tap coins as fast as you can!",
+      icon: "⚡",
+      reward: "100-300 coins",
+      difficulty: "Hard",
+    },
+    {
+      id: "quiz",
+      name: "Product Quiz",
+      description: "Test your product knowledge!",
+      icon: "🧩",
+      reward: "75-250 coins",
+      difficulty: "Medium",
+    },
+  ];
+
+  const wheelPrizes = [
+    { label: "10 Coins", value: 10, color: "from-gray-500 to-gray-600" },
+    { label: "50 Coins", value: 50, color: "from-blue-500 to-blue-600" },
+    { label: "100 Coins", value: 100, color: "from-green-500 to-green-600" },
+    {
+      label: "25 XP",
+      value: 25,
+      color: "from-purple-500 to-purple-600",
+      type: "xp",
+    },
+    {
+      label: "200 Coins",
+      value: 200,
+      color: "from-primary-gold to-primary-orange",
+    },
+    {
+      label: "500 Coins",
+      value: 500,
+      color: "from-primary-burgundy to-primary-red",
+    },
+    {
+      label: "50 XP",
+      value: 50,
+      color: "from-pink-500 to-pink-600",
+      type: "xp",
+    },
+    { label: "75 Coins", value: 75, color: "from-teal-500 to-teal-600" },
+  ];
+
+  // Gamification State
+  const [gameProfile, setGameProfile] = useState({
+    level: 12,
+    xp: 2450,
+    xpToNext: 550,
+    totalXp: 3000,
+    coins: 1250,
+    gems: 45,
+    streak: 7,
+    achievements: [],
+    badges: ["Early Adopter", "Trendsetter", "Social Butterfly"],
+    dailyQuests: [
+      {
+        id: 1,
+        title: "Like 5 products",
+        progress: 3,
+        target: 5,
+        reward: 50,
+        completed: false,
+      },
+      {
+        id: 2,
+        title: "Add 2 items to cart",
+        progress: 2,
+        target: 2,
+        reward: 75,
+        completed: true,
+      },
+      {
+        id: 3,
+        title: "Share a product",
+        progress: 0,
+        target: 1,
+        reward: 100,
+        completed: false,
+      },
+    ],
+    weeklyChallenge: {
+      title: "Shopping Spree",
+      description: "Purchase 3 items this week",
+      progress: 1,
+      target: 3,
+      reward: 500,
+      timeLeft: "4 days",
+    },
+  });
+
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      type: "achievement",
+      message: "🏆 Level Up! You reached level 12!",
+      time: "2m ago",
+      read: false,
+    },
+    {
+      id: 2,
+      type: "quest",
+      message: "✨ Daily quest completed! +75 XP",
+      time: "1h ago",
+      read: false,
+    },
+    {
+      id: 3,
+      type: "reward",
+      message: "🎁 Streak bonus: +50 coins!",
+      time: "3h ago",
+      read: true,
     },
   ]);
 
-  const [customerInfo, setCustomerInfo] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: {
-      street: "",
-      city: "",
-      state: "",
-      zip: "",
-      country: "Rwanda",
-    },
-  });
+  const containerRef = useRef(null);
+  const startY = useRef(0);
+  const currentY = useRef(0);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const currentX = useRef(0);
 
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
-
-  // Suppliers data
+  // Sample data with cleaner structure
   const [suppliers] = useState([
     {
       _id: "sup1",
       name: "Kigali Artisan Collective",
+      username: "@kigali_artisans",
       description:
-        "Traditional Rwandan crafts and handwoven items made by skilled local artisans",
+        "Traditional Rwandan crafts ✨ Preserving culture through art 🎨",
       image: "🏪",
       rating: 4.8,
       totalReviews: 156,
       location: "Kigali, Rwanda",
-      phone: "+250 788 123 456",
-      email: "info@kigaliartisans.rw",
-      established: "2018",
-      specialties: ["Arts & Crafts", "Traditional Items"],
-      totalProducts: 24,
       verified: true,
+      followers: "12.5K",
       responseTime: "Usually responds within 2 hours",
+      categories: ["Arts & Crafts", "Home Decor", "Traditional Items"],
+      products: [
+        {
+          _id: "s1p1",
+          name: "Handwoven Agaseke Basket",
+          image: "🧺",
+          price: 45.99,
+          category: "Arts & Crafts",
+          trending: true,
+        },
+        {
+          _id: "s1p2",
+          name: "Imigongo Art Painting",
+          image: "🎨",
+          price: 125.0,
+          category: "Arts & Crafts",
+          trending: false,
+        },
+        {
+          _id: "s1p3",
+          name: "Traditional Pottery",
+          image: "🏺",
+          price: 35.0,
+          category: "Home Decor",
+          trending: false,
+        },
+        {
+          _id: "s1p4",
+          name: "Woven Table Mat",
+          image: "🪑",
+          price: 18.99,
+          category: "Home Decor",
+          trending: true,
+        },
+        {
+          _id: "s1p5",
+          name: "Cultural Mask",
+          image: "🎭",
+          price: 89.99,
+          category: "Traditional Items",
+          trending: false,
+        },
+        {
+          _id: "s1p6",
+          name: "Beaded Jewelry",
+          image: "📿",
+          price: 25.5,
+          category: "Arts & Crafts",
+          trending: true,
+        },
+      ],
     },
     {
       _id: "sup2",
       name: "Thousand Hills Coffee",
-      description: "Premium single-origin coffee from the hills of Rwanda",
+      username: "@thousandhills_coffee",
+      description:
+        "Premium single-origin coffee ☕ From farm to cup with love 💚",
       image: "☕",
       rating: 4.9,
       totalReviews: 203,
       location: "Nyungwe, Rwanda",
-      phone: "+250 788 654 321",
-      email: "orders@thousandhills.rw",
-      established: "2015",
-      specialties: ["Food & Beverages", "Coffee"],
-      totalProducts: 12,
       verified: true,
+      followers: "8.2K",
       responseTime: "Usually responds within 1 hour",
-    },
-    {
-      _id: "sup3",
-      name: "EcoRwanda Products",
-      description:
-        "Sustainable and eco-friendly products made from local materials",
-      image: "🌱",
-      rating: 4.6,
-      totalReviews: 89,
-      location: "Butare, Rwanda",
-      phone: "+250 788 987 654",
-      email: "hello@ecorwanda.rw",
-      established: "2020",
-      specialties: ["Fashion & Accessories", "Eco-friendly"],
-      totalProducts: 18,
-      verified: true,
-      responseTime: "Usually responds within 3 hours",
-    },
-    {
-      _id: "sup4",
-      name: "TechKigali Solutions",
-      description: "Modern technology solutions with local innovation",
-      image: "💻",
-      rating: 4.7,
-      totalReviews: 67,
-      location: "Kigali, Rwanda",
-      phone: "+250 788 456 789",
-      email: "support@techkigali.rw",
-      established: "2019",
-      specialties: ["Electronics", "Technology"],
-      totalProducts: 15,
-      verified: true,
-      responseTime: "Usually responds within 4 hours",
+      categories: ["Coffee", "Beverages", "Organic Products"],
+      products: [
+        {
+          _id: "s2p1",
+          name: "Rwandan Coffee Beans",
+          image: "☕",
+          price: 28.5,
+          category: "Coffee",
+          trending: true,
+        },
+        {
+          _id: "s2p2",
+          name: "Ground Coffee",
+          image: "🫘",
+          price: 22.0,
+          category: "Coffee",
+          trending: false,
+        },
+        {
+          _id: "s2p3",
+          name: "Coffee Gift Set",
+          image: "🎁",
+          price: 65.0,
+          category: "Coffee",
+          trending: true,
+        },
+        {
+          _id: "s2p4",
+          name: "Organic Honey",
+          image: "🍯",
+          price: 15.99,
+          category: "Organic Products",
+          trending: false,
+        },
+      ],
     },
   ]);
 
-  // Enhanced products data with supplier references
   const [products] = useState([
     {
       _id: "1",
       name: "Handwoven Agaseke Basket",
       description:
-        "Traditional Rwandan peace basket made by skilled artisans with natural fibers",
+        "Traditional Rwandan peace basket ✨ Each piece tells a story of unity 🕊️",
       price: 45.99,
-      unit: "piece",
+      originalPrice: 65.99,
       stockQuantity: 25,
       category: "Arts & Crafts",
       image: "🧺",
@@ -234,21 +353,19 @@ const CustomerPage = () => {
       rating: 4.8,
       totalReviews: 34,
       views: 1240,
-      images: ["🧺", "🎨", "🏺"],
-      specifications: {
-        material: "Natural fibers",
-        dimensions: "30cm x 25cm",
-        weight: "0.5kg",
-        origin: "Kigali, Rwanda",
-      },
+      likes: 892,
+      shares: 156,
+      trending: true,
+      discount: 30,
+      xpReward: 25,
     },
     {
       _id: "2",
       name: "Rwandan Coffee Beans",
       description:
-        "Premium single-origin Arabica coffee from the hills of Nyungwe",
+        "Premium Arabica coffee ☕ Wake up to the taste of Rwanda! ☀️",
       price: 28.5,
-      unit: "kg",
+      originalPrice: 35.0,
       stockQuantity: 35,
       category: "Food & Beverages",
       image: "☕",
@@ -257,20 +374,18 @@ const CustomerPage = () => {
       rating: 4.9,
       totalReviews: 67,
       views: 2150,
-      images: ["☕", "🌱", "🏔️"],
-      specifications: {
-        type: "Arabica",
-        roast: "Medium",
-        origin: "Nyungwe Forest",
-        altitude: "1,800m",
-      },
+      likes: 1456,
+      shares: 234,
+      trending: true,
+      discount: 19,
+      xpReward: 30,
     },
     {
       _id: "3",
       name: "Imigongo Art Painting",
-      description: "Traditional geometric cow dung art piece from Nyakarimbi",
+      description: "Traditional geometric art 🎨 Ancient meets modern style ✨",
       price: 125.0,
-      unit: "piece",
+      originalPrice: 150.0,
       stockQuantity: 8,
       category: "Arts & Crafts",
       image: "🎨",
@@ -279,163 +394,286 @@ const CustomerPage = () => {
       rating: 4.7,
       totalReviews: 23,
       views: 890,
-      images: ["🎨", "🖼️", "🏺"],
-      specifications: {
-        material: "Natural cow dung, natural pigments",
-        dimensions: "40cm x 30cm",
-        weight: "2kg",
-        origin: "Nyakarimbi, Rwanda",
-      },
-    },
-    {
-      _id: "4",
-      name: "Banana Fiber Laptop Bag",
-      description:
-        "Eco-friendly laptop bag made from sustainable banana fibers",
-      price: 65.0,
-      unit: "piece",
-      stockQuantity: 15,
-      category: "Fashion & Accessories",
-      image: "💼",
-      supplierId: "sup3",
-      supplierName: "EcoRwanda Products",
-      rating: 4.6,
-      totalReviews: 19,
-      views: 756,
-      images: ["💼", "🌱", "👜"],
-      specifications: {
-        material: "Banana fiber",
-        dimensions: "35cm x 25cm x 5cm",
-        weight: "0.8kg",
-        capacity: "15-inch laptop",
-      },
-    },
-    {
-      _id: "5",
-      name: "Solar-Powered Radio",
-      description: "Portable solar radio supporting local Rwandan stations",
-      price: 78.0,
-      unit: "piece",
-      stockQuantity: 12,
-      category: "Electronics",
-      image: "📻",
-      supplierId: "sup4",
-      supplierName: "TechKigali Solutions",
-      rating: 4.8,
-      totalReviews: 28,
-      views: 1120,
-      images: ["📻", "☀️", "🔋"],
-      specifications: {
-        power: "Solar + Battery",
-        frequency: "FM/AM",
-        battery: "2000mAh",
-        features: "USB charging port",
-      },
+      likes: 567,
+      shares: 89,
+      trending: false,
+      discount: 17,
+      xpReward: 40,
     },
   ]);
 
-  // Sample reviews data
-  const [reviews] = useState([
-    {
-      _id: "rev1",
-      targetType: "product",
-      targetId: "1",
-      customerName: "Alice Mukamana",
-      rating: 5,
-      comment:
-        "Beautiful basket! The craftsmanship is excellent and it arrived quickly.",
-      date: "2024-01-10",
-      verified: true,
-    },
-    {
-      _id: "rev2",
-      targetType: "supplier",
-      targetId: "sup1",
-      customerName: "Jean Baptiste",
-      rating: 5,
-      comment: "Amazing supplier! Great communication and authentic products.",
-      date: "2024-01-08",
-      verified: true,
-    },
-    {
-      _id: "rev3",
-      targetType: "product",
-      targetId: "2",
-      customerName: "Sarah Johnson",
-      rating: 5,
-      comment: "Best coffee I've ever tasted! Will definitely order again.",
-      date: "2024-01-12",
-      verified: true,
-    },
-  ]);
+  const currentProduct = products[currentProductIndex];
+  const currentSupplier = suppliers.find(
+    (s) => s._id === currentProduct?.supplierId
+  );
 
-  // Sample chat messages
-  const [chatMessages] = useState([
-    {
-      id: 1,
-      supplierId: "sup1",
-      customerName: "You",
-      message:
-        "Hi, I'm interested in bulk orders for the Agaseke baskets. Do you offer discounts?",
-      timestamp: "2024-01-15 10:30",
-      isFromCustomer: true,
-    },
-    {
-      id: 2,
-      supplierId: "sup1",
-      customerName: "Kigali Artisan Collective",
-      message:
-        "Hello! Yes, we offer 10% discount for orders of 10+ baskets. Would you like more details?",
-      timestamp: "2024-01-15 10:45",
-      isFromCustomer: false,
-    },
-  ]);
+  // Gamification Functions
+  const addXP = (amount, action) => {
+    setGameProfile((prev) => {
+      const newXp = prev.xp + amount;
+      const levelUp = newXp >= prev.totalXp;
 
-  const categories = [
-    "all",
-    "Arts & Crafts",
-    "Food & Beverages",
-    "Fashion & Accessories",
-    "Education",
-    "Electronics",
-  ];
+      if (levelUp) {
+        setNotifications((prevNotifs) => [
+          {
+            id: Date.now(),
+            type: "achievement",
+            message: `🎉 Level Up! You reached level ${prev.level + 1}!`,
+            time: "now",
+            read: false,
+          },
+          ...prevNotifs,
+        ]);
+      }
 
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory =
-      selectedCategory === "all" || product.category === selectedCategory;
-    const matchesSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.supplierName.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+      return {
+        ...prev,
+        xp: levelUp ? newXp - prev.totalXp : newXp,
+        level: levelUp ? prev.level + 1 : prev.level,
+        totalXp: levelUp ? prev.totalXp + 500 : prev.totalXp,
+        xpToNext: levelUp
+          ? prev.totalXp + 500 - (newXp - prev.totalXp)
+          : prev.xpToNext - amount,
+      };
+    });
 
-  const filteredSuppliers = suppliers.filter((supplier) => {
-    const matchesSearch =
-      supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      supplier.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      supplier.specialties.some((specialty) =>
-        specialty.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    return matchesSearch;
-  });
-
-  const getSupplierProducts = (supplierId) => {
-    return products.filter((product) => product.supplierId === supplierId);
+    // Show XP notification
+    setNotifications((prev) => [
+      {
+        id: Date.now(),
+        type: "xp",
+        message: `+${amount} XP for ${action}! ⭐`,
+        time: "now",
+        read: false,
+      },
+      ...prev,
+    ]);
   };
 
-  const getProductReviews = (productId) => {
-    return reviews.filter(
-      (review) =>
-        review.targetType === "product" && review.targetId === productId
-    );
+  const addCoins = (amount, reason) => {
+    setGameProfile((prev) => ({ ...prev, coins: prev.coins + amount }));
+    setNotifications((prev) => [
+      {
+        id: Date.now(),
+        type: "coins",
+        message: `+${amount} coins for ${reason}! 🪙`,
+        time: "now",
+        read: false,
+      },
+      ...prev,
+    ]);
   };
 
-  const getSupplierReviews = (supplierId) => {
-    return reviews.filter(
-      (review) =>
-        review.targetType === "supplier" && review.targetId === supplierId
+  const completeQuest = (questId) => {
+    setGameProfile((prev) => ({
+      ...prev,
+      dailyQuests: prev.dailyQuests.map((quest) =>
+        quest.id === questId
+          ? { ...quest, completed: true, progress: quest.target }
+          : quest
+      ),
+    }));
+  };
+
+  // Minigame Functions
+  const initMemoryGame = () => {
+    const gameProducts = [...products, ...products].map((product, index) => ({
+      id: index,
+      productId: product._id,
+      image: product.image,
+      name: product.name,
+      flipped: false,
+      matched: false,
+    }));
+
+    // Shuffle cards
+    for (let i = gameProducts.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [gameProducts[i], gameProducts[j]] = [gameProducts[j], gameProducts[i]];
+    }
+
+    setMemoryGame({
+      cards: gameProducts,
+      flipped: [],
+      matched: [],
+      moves: 0,
+      score: 0,
+      gameActive: true,
+    });
+  };
+
+  const flipCard = (cardId) => {
+    if (
+      memoryGame.flipped.length >= 2 ||
+      memoryGame.flipped.includes(cardId) ||
+      memoryGame.matched.includes(cardId)
+    )
+      return;
+
+    const newFlipped = [...memoryGame.flipped, cardId];
+    setMemoryGame((prev) => ({ ...prev, flipped: newFlipped }));
+
+    if (newFlipped.length === 2) {
+      const [first, second] = newFlipped;
+      const firstCard = memoryGame.cards.find((c) => c.id === first);
+      const secondCard = memoryGame.cards.find((c) => c.id === second);
+
+      setTimeout(() => {
+        if (firstCard.productId === secondCard.productId) {
+          // Match found
+          setMemoryGame((prev) => ({
+            ...prev,
+            matched: [...prev.matched, first, second],
+            flipped: [],
+            moves: prev.moves + 1,
+            score: prev.score + 50,
+          }));
+
+          // Check if game complete
+          if (memoryGame.matched.length + 2 === memoryGame.cards.length) {
+            const bonus = Math.max(100 - memoryGame.moves * 5, 50);
+            addCoins(memoryGame.score + bonus, "completing memory game");
+            addXP(75, "completing memory game");
+          }
+        } else {
+          // No match
+          setMemoryGame((prev) => ({
+            ...prev,
+            flipped: [],
+            moves: prev.moves + 1,
+          }));
+        }
+      }, 1000);
+    }
+  };
+
+  const spinTheWheel = () => {
+    if (spinWheel.spinning) return;
+
+    setSpinWheel((prev) => ({ ...prev, spinning: true }));
+
+    const randomAngle = Math.random() * 360 + 1440; // At least 4 full rotations
+    const finalAngle = randomAngle % 360;
+    const prizeIndex = Math.floor((360 - finalAngle) / 45) % wheelPrizes.length;
+    const prize = wheelPrizes[prizeIndex];
+
+    setTimeout(() => {
+      setSpinWheel({
+        spinning: false,
+        result: prize,
+        angle: randomAngle,
+      });
+
+      if (prize.type === "xp") {
+        addXP(prize.value, "spinning the wheel");
+      } else {
+        addCoins(prize.value, "spinning the wheel");
+      }
+    }, 3000);
+  };
+
+  const startQuickTap = () => {
+    setQuickTap({
+      active: true,
+      score: 0,
+      timeLeft: 30,
+      targets: [],
+    });
+
+    // Generate targets
+    const interval = setInterval(() => {
+      setQuickTap((prev) => {
+        if (prev.timeLeft <= 0) {
+          clearInterval(interval);
+          addCoins(prev.score * 2, "quick tap game");
+          addXP(prev.score, "quick tap game");
+          return { ...prev, active: false };
+        }
+
+        const newTargets = [...prev.targets];
+        if (Math.random() < 0.7 && newTargets.length < 5) {
+          newTargets.push({
+            id: Date.now(),
+            x: Math.random() * 80 + 10,
+            y: Math.random() * 60 + 20,
+            type: Math.random() < 0.8 ? "coin" : "gem",
+          });
+        }
+
+        return {
+          ...prev,
+          timeLeft: prev.timeLeft - 1,
+          targets: newTargets.filter((t) => Date.now() - t.id < 3000),
+        };
+      });
+    }, 1000);
+  };
+
+  const tapTarget = (targetId, type) => {
+    setQuickTap((prev) => ({
+      ...prev,
+      score: prev.score + (type === "gem" ? 10 : 5),
+      targets: prev.targets.filter((t) => t.id !== targetId),
+    }));
+  };
+
+  // Enhanced interaction functions with gamification
+  const nextProduct = useCallback(() => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentProductIndex((prev) => (prev + 1) % products.length);
+    setTimeout(() => setIsTransitioning(false), 300);
+    addXP(5, "browsing products");
+  }, [isTransitioning, products.length]);
+
+  const prevProduct = useCallback(() => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentProductIndex(
+      (prev) => (prev - 1 + products.length) % products.length
     );
+    setTimeout(() => setIsTransitioning(false), 300);
+    addXP(5, "browsing products");
+  }, [isTransitioning, products.length]);
+
+  const handleTouchStart = (e) => {
+    startY.current = e.touches[0].clientY;
+    startX.current = e.touches[0].clientX;
+    isDragging.current = true;
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging.current) return;
+    currentY.current = e.touches[0].clientY;
+    currentX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+
+    const deltaY = startY.current - currentY.current;
+    const deltaX = startX.current - currentX.current;
+    const threshold = 50;
+
+    if (Math.abs(deltaY) > threshold && Math.abs(deltaY) > Math.abs(deltaX)) {
+      // Vertical swipe
+      if (deltaY > 0) {
+        nextProduct();
+      } else {
+        prevProduct();
+      }
+    } else if (
+      Math.abs(deltaX) > threshold &&
+      Math.abs(deltaX) > Math.abs(deltaY)
+    ) {
+      // Horizontal swipe
+      if (deltaX > 0) {
+        setShowProductDetails(true);
+      } else {
+        setShowSupplierInfo(true);
+      }
+    }
   };
 
   const addToCart = (product) => {
@@ -450,718 +688,698 @@ const CustomerPage = () => {
       }
       return [...prevCart, { ...product, quantity: 1 }];
     });
-  };
 
-  const updateCartQuantity = (productId, newQuantity) => {
-    if (newQuantity === 0) {
-      setCart((prevCart) => prevCart.filter((item) => item._id !== productId));
-    } else {
-      setCart((prevCart) =>
-        prevCart.map((item) =>
-          item._id === productId ? { ...item, quantity: newQuantity } : item
-        )
-      );
+    addXP(product.xpReward || 15, "adding to cart");
+    addCoins(10, "adding to cart");
+
+    // Check daily quest
+    const cartQuest = gameProfile.dailyQuests.find((q) =>
+      q.title.includes("cart")
+    );
+    if (cartQuest && !cartQuest.completed) {
+      const newProgress = cartQuest.progress + 1;
+      if (newProgress >= cartQuest.target) {
+        completeQuest(cartQuest.id);
+        addXP(cartQuest.reward, "completing daily quest");
+      }
     }
   };
 
-  const getTotalPrice = () => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  const toggleLike = (productId) => {
+    setLikedProducts((prev) => {
+      const newLiked = new Set(prev);
+      const isLiking = !newLiked.has(productId);
+
+      if (isLiking) {
+        newLiked.add(productId);
+        addXP(10, "liking a product");
+        addCoins(5, "liking a product");
+
+        // Check daily quest
+        const likeQuest = gameProfile.dailyQuests.find((q) =>
+          q.title.includes("Like")
+        );
+        if (likeQuest && !likeQuest.completed) {
+          const newProgress = likeQuest.progress + 1;
+          if (newProgress >= likeQuest.target) {
+            completeQuest(likeQuest.id);
+            addXP(likeQuest.reward, "completing daily quest");
+          }
+        }
+      } else {
+        newLiked.delete(productId);
+      }
+
+      return newLiked;
+    });
+  };
+
+  const shareProduct = async (product) => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product.name,
+          text: product.description,
+          url: window.location.href,
+        });
+        addXP(20, "sharing a product");
+        addCoins(15, "sharing a product");
+
+        // Check daily quest
+        const shareQuest = gameProfile.dailyQuests.find((q) =>
+          q.title.includes("Share")
+        );
+        if (shareQuest && !shareQuest.completed) {
+          completeQuest(shareQuest.id);
+          addXP(shareQuest.reward, "completing daily quest");
+        }
+      } catch (err) {
+        console.log("Error sharing:", err);
+      }
+    }
+  };
+
+  const toggleWishlist = (product) => {
+    setWishlist((prev) => {
+      const exists = prev.find((item) => item._id === product._id);
+      if (!exists) {
+        addXP(15, "adding to wishlist");
+        addCoins(8, "adding to wishlist");
+        return [...prev, product];
+      }
+      return prev.filter((item) => item._id !== product._id);
+    });
+  };
+
+  const isInWishlist = (productId) => {
+    return wishlist.some((item) => item._id === productId);
   };
 
   const getTotalItems = () => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   };
 
-  const handleCheckout = () => {
-    alert(
-      "Murakoze cyane! Order placed successfully! You will receive a confirmation email shortly."
-    );
-    setCart([]);
-    setShowCheckout(false);
-    setShowCart(false);
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  const openSupplierProfile = (supplier) => {
-    setSelectedSupplier(supplier);
-    setShowSupplierProfile(true);
-  };
-
-  const openProductDetails = (product) => {
-    setSelectedProduct(product);
-    setShowProductDetails(true);
-  };
-
-  const startChat = (supplier) => {
-    setChatSupplier(supplier);
-    setShowChat(true);
-  };
-
-  const openReviewForm = (type, id) => {
-    setReviewTarget({ type, id });
-    setNewReview({ rating: 5, comment: "" });
-    setShowReviewForm(true);
-  };
-
-  const submitReview = () => {
-    console.log("Submitting review:", { ...newReview, target: reviewTarget });
-    setShowReviewForm(false);
-    setReviewTarget(null);
-    setNewReview({ rating: 5, comment: "" });
-  };
-
-  const sendMessage = () => {
-    if (newMessage.trim()) {
-      console.log(
-        "Sending message:",
-        newMessage,
-        "to supplier:",
-        chatSupplier?.name
-      );
-      setNewMessage("");
-    }
-  };
-
-  const toggleWishlist = (item, type = "product") => {
-    setWishlist((prevWishlist) => {
-      const existingIndex = prevWishlist.findIndex(
-        (w) => w.id === item._id && w.type === type
-      );
-      if (existingIndex >= 0) {
-        return prevWishlist.filter((_, index) => index !== existingIndex);
-      } else {
-        return [
-          ...prevWishlist,
-          { ...item, id: item._id, type, addedDate: new Date().toISOString() },
-        ];
-      }
-    });
-  };
-
-  const isInWishlist = (itemId, type = "product") => {
-    return wishlist.some((w) => w.id === itemId && w.type === type);
-  };
-
-  const openBulkOrderForm = (product) => {
-    setBulkOrderProduct(product);
-    setBulkOrderForm({
-      quantity: "",
-      targetPrice: "",
-      deadline: "",
-      notes: "",
-      contactMethod: "email",
-    });
-    setShowBulkOrderForm(true);
-  };
-
-  const submitBulkOrder = () => {
-    console.log("Submitting bulk order:", {
-      product: bulkOrderProduct,
-      ...bulkOrderForm,
-    });
-    alert(
-      "Bulk order request sent! The supplier will contact you within 24 hours."
-    );
-    setShowBulkOrderForm(false);
-    setBulkOrderProduct(null);
-  };
-
-  const getOrderStatusColor = (status) => {
-    switch (status) {
-      case "placed":
-        return "bg-blue-100 text-blue-800";
-      case "confirmed":
-        return "bg-green-100 text-green-800";
-      case "processing":
-        return "bg-yellow-100 text-yellow-800";
-      case "shipped":
-        return "bg-purple-100 text-purple-800";
-      case "delivered":
-        return "bg-green-100 text-green-800";
-      case "cancelled":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const renderMarketplace = () => (
-    <div className="space-y-8">
-      {/* Featured Suppliers Section */}
-      <section>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900">
-            Featured Suppliers
-          </h2>
-          <Button
-            variant="outline"
-            onClick={() => setActiveView("suppliers")}
-            className="border-primary-burgundy text-primary-burgundy hover:bg-gold-whisper"
-          >
-            View All Suppliers <ChevronRight className="w-4 h-4 ml-1" />
-          </Button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {suppliers.slice(0, 4).map((supplier) => (
-            <Card
-              key={supplier._id}
-              className="cursor-pointer hover:shadow-lg transition-all duration-300 group"
-              onClick={() => openSupplierProfile(supplier)}
-            >
-              <CardContent className="p-6 text-center">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">
-                  {supplier.image}
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-primary-burgundy transition-colors">
-                  {supplier.name}
-                </h3>
-                <div className="flex items-center justify-center mb-2">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-3 h-3 ${
-                          i < Math.floor(supplier.rating)
-                            ? "text-yellow-400 fill-current"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs text-gray-500">
-                    ({supplier.totalReviews})
-                  </span>
-                </div>
-                <p className="text-sm text-gray-600 mb-3">
-                  {supplier.specialties.join(", ")}
-                </p>
-                <Badge variant="outline" className="text-xs">
-                  {supplier.totalProducts} products
-                </Badge>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Products Section */}
-      <section>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900">
-            Featured Products
-          </h2>
-          <Button
-            variant="outline"
-            onClick={() => setActiveView("products")}
-            className="border-primary-burgundy text-primary-burgundy hover:bg-gold-whisper"
-          >
-            View All Products <ChevronRight className="w-4 h-4 ml-1" />
-          </Button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.slice(0, 8).map((product, index) => (
-            <div
-              key={product._id}
-              className={`group bg-white rounded-2xl border border-gray-100 hover:border-gold-soft hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${
-                isLoaded
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-4"
-              }`}
-              style={{ transitionDelay: `${index * 50}ms` }}
-              onClick={() => openProductDetails(product)}
-            >
-              {/* Product Image */}
-              <div className="relative h-48 bg-gray-50 flex items-center justify-center">
-                <div className="text-6xl group-hover:scale-110 transition-transform duration-300">
-                  {product.image}
-                </div>
-
-                {/* Action Buttons */}
-                <div className="absolute top-3 right-3 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleWishlist(product, "product");
-                    }}
-                    className={`w-8 h-8 rounded-full shadow-md flex items-center justify-center transition-colors ${
-                      isInWishlist(product._id, "product")
-                        ? "bg-primary-burgundy text-white"
-                        : "bg-white hover:bg-gold-whisper text-primary-burgundy"
-                    }`}
-                  >
-                    <Heart
-                      className={`w-4 h-4 ${
-                        isInWishlist(product._id, "product")
-                          ? "fill-current"
-                          : ""
-                      }`}
-                    />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openProductDetails(product);
-                    }}
-                    className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gold-whisper transition-colors"
-                  >
-                    <Eye className="w-4 h-4 text-primary-burgundy" />
-                  </button>
-                </div>
-
-                {/* Stock Badge */}
-                {product.stockQuantity <= 10 && (
-                  <div className="absolute top-3 left-3">
-                    <span className="bg-primary-burgundy text-white text-xs font-medium px-2 py-1 rounded-full">
-                      Limited Stock
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Product Info */}
-              <div className="p-5">
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-gray-900 text-lg leading-tight group-hover:text-primary-burgundy transition-colors">
-                    {product.name}
-                  </h3>
-                  <div className="flex items-center space-x-1">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-3 h-3 ${
-                            i < Math.floor(product.rating)
-                              ? "text-yellow-400 fill-current"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-500">
-                      ({product.totalReviews})
-                    </span>
-                  </div>
-                </div>
-
-                <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-                  {product.description}
-                </p>
-
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <span className="text-2xl font-bold text-gray-900">
-                      ${product.price}
-                    </span>
-                    <span className="text-sm text-gray-500 ml-1">
-                      per {product.unit}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xs text-gray-500">
-                      {product.supplierName}
-                    </div>
-                    <div className="flex items-center text-xs text-gray-400 mt-1">
-                      <Eye className="w-3 h-3 mr-1" />
-                      {product.views}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span
-                    className={`text-xs px-2 py-1 rounded-full font-medium ${
-                      product.stockQuantity > 10
-                        ? "bg-green-100 text-green-700"
-                        : product.stockQuantity > 0
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                  >
-                    {product.stockQuantity > 0
-                      ? `${product.stockQuantity} available`
-                      : "Sold out"}
-                  </span>
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addToCart(product);
-                    }}
-                    disabled={product.stockQuantity === 0}
-                    className="bg-primary-burgundy text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-burgundy-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
-
-  const renderSuppliers = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-gray-900">All Suppliers</h2>
-        <p className="text-sm text-gray-600">
-          {filteredSuppliers.length} suppliers found
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredSuppliers.map((supplier) => (
-          <Card
-            key={supplier._id}
-            className="cursor-pointer hover:shadow-lg transition-all duration-300 group"
-            onClick={() => openSupplierProfile(supplier)}
-          >
-            <CardContent className="p-6">
-              <div className="flex items-start space-x-4">
-                <div className="text-4xl group-hover:scale-110 transition-transform">
-                  {supplier.image}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <h3 className="font-semibold text-gray-900 group-hover:text-primary-burgundy transition-colors">
-                      {supplier.name}
-                    </h3>
-                    {supplier.verified && (
-                      <Badge className="bg-green-100 text-green-800 text-xs">
-                        <Award className="w-3 h-3 mr-1" />
-                        Verified
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="flex items-center mb-2">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-3 h-3 ${
-                            i < Math.floor(supplier.rating)
-                              ? "text-yellow-400 fill-current"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-500 ml-1">
-                      {supplier.rating} ({supplier.totalReviews} reviews)
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-3">
-                    {supplier.description}
-                  </p>
-                  <div className="flex items-center text-xs text-gray-500 mb-2">
-                    <MapPin className="w-3 h-3 mr-1" />
-                    {supplier.location}
-                  </div>
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {supplier.specialties.map((specialty) => (
-                      <Badge
-                        key={specialty}
-                        variant="outline"
-                        className="text-xs"
-                      >
-                        {specialty}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500">
-                      {supplier.totalProducts} products
-                    </span>
-                    <div className="flex space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          startChat(supplier);
-                        }}
-                        className="text-xs"
-                      >
-                        <MessageSquare className="w-3 h-3 mr-1" />
-                        Chat
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openSupplierProfile(supplier);
-                        }}
-                        className="bg-primary-burgundy hover:bg-burgundy-light text-white text-xs"
-                      >
-                        View Store
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderProducts = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-gray-900">All Products</h2>
-        <p className="text-sm text-gray-600">
-          {filteredProducts.length} products found
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredProducts.map((product, index) => (
-          <div
-            key={product._id}
-            className={`group bg-white rounded-2xl border border-gray-100 hover:border-gold-soft hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${
-              isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-            style={{ transitionDelay: `${index * 50}ms` }}
-            onClick={() => openProductDetails(product)}
-          >
-            {/* Product Image */}
-            <div className="relative h-48 bg-gray-50 flex items-center justify-center">
-              <div className="text-6xl group-hover:scale-110 transition-transform duration-300">
-                {product.image}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="absolute top-3 right-3 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleWishlist(product, "product");
-                  }}
-                  className={`w-8 h-8 rounded-full shadow-md flex items-center justify-center transition-colors ${
-                    isInWishlist(product._id, "product")
-                      ? "bg-primary-burgundy text-white"
-                      : "bg-white hover:bg-gold-whisper text-primary-burgundy"
-                  }`}
-                >
-                  <Heart
-                    className={`w-4 h-4 ${
-                      isInWishlist(product._id, "product") ? "fill-current" : ""
-                    }`}
-                  />
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openProductDetails(product);
-                  }}
-                  className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gold-whisper transition-colors"
-                >
-                  <Eye className="w-4 h-4 text-primary-burgundy" />
-                </button>
-              </div>
-
-              {/* Stock Badge */}
-              {product.stockQuantity <= 10 && (
-                <div className="absolute top-3 left-3">
-                  <span className="bg-primary-burgundy text-white text-xs font-medium px-2 py-1 rounded-full">
-                    Limited Stock
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Product Info */}
-            <div className="p-5">
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-gray-900 text-lg leading-tight group-hover:text-primary-burgundy transition-colors">
-                  {product.name}
-                </h3>
-                <div className="flex items-center space-x-1">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-3 h-3 ${
-                          i < Math.floor(product.rating)
-                            ? "text-yellow-400 fill-current"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs text-gray-500">
-                    ({product.totalReviews})
-                  </span>
-                </div>
-              </div>
-
-              <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-                {product.description}
-              </p>
-
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <span className="text-2xl font-bold text-gray-900">
-                    ${product.price}
-                  </span>
-                  <span className="text-sm text-gray-500 ml-1">
-                    per {product.unit}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs text-gray-500">
-                    {product.supplierName}
-                  </div>
-                  <div className="flex items-center text-xs text-gray-400 mt-1">
-                    <Eye className="w-3 h-3 mr-1" />
-                    {product.views}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span
-                  className={`text-xs px-2 py-1 rounded-full font-medium ${
-                    product.stockQuantity > 10
-                      ? "bg-green-100 text-green-700"
-                      : product.stockQuantity > 0
-                      ? "bg-yellow-100 text-yellow-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {product.stockQuantity > 0
-                    ? `${product.stockQuantity} available`
-                    : "Sold out"}
-                </span>
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToCart(product);
-                  }}
-                  disabled={product.stockQuantity === 0}
-                  className="bg-primary-burgundy text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-burgundy-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  if (!currentProduct) return null;
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+    <>
+      <div className="flex justify-center min-h-screen bg-black">
+        {/* Desktop Container */}
+        <div className="hidden lg:flex w-full max-w-7xl">
+          {/* Left Sidebar */}
+          <div className="w-64 bg-gray-900 text-white p-4 flex flex-col">
             {/* Logo */}
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-primary-burgundy rounded-lg flex items-center justify-center text-white font-bold text-sm">
+            <div className="flex items-center space-x-3 mb-8">
+              <div className="w-10 h-10 bg-gradient-to-r from-primary-burgundy to-primary-gold rounded-xl flex items-center justify-center text-white font-bold">
                 R
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">
-                  Rwanda Treasures
-                </h1>
+                <h1 className="text-lg font-bold">Rwanda Shop</h1>
+                <p className="text-xs text-gray-400">Social Commerce</p>
               </div>
             </div>
 
-            {/* Navigation Tabs */}
-            <div className="hidden md:flex items-center space-x-8">
-              <button
-                onClick={() => setActiveView("marketplace")}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                  activeView === "marketplace"
-                    ? "text-primary-burgundy border-b-2 border-primary-burgundy"
-                    : "text-gray-600 hover:text-primary-burgundy"
-                }`}
-              >
-                Marketplace
-              </button>
-              <button
-                onClick={() => setActiveView("suppliers")}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                  activeView === "suppliers"
-                    ? "text-primary-burgundy border-b-2 border-primary-burgundy"
-                    : "text-gray-600 hover:text-primary-burgundy"
-                }`}
-              >
-                Suppliers
-              </button>
-              <button
-                onClick={() => setActiveView("products")}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                  activeView === "products"
-                    ? "text-primary-burgundy border-b-2 border-primary-burgundy"
-                    : "text-gray-600 hover:text-primary-burgundy"
-                }`}
-              >
-                Products
-              </button>
-            </div>
-
-            {/* Search */}
-            <div className="flex-1 max-w-xl mx-8">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search products, suppliers..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full h-10 pl-10 pr-4 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all text-sm"
+            {/* Game Stats - Minimalistic */}
+            <div className="bg-gradient-to-r from-primary-burgundy/20 to-primary-gold/20 rounded-xl p-3 mb-6 border border-primary-gold/30">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">
+                  Level {gameProfile.level}
+                </span>
+                <div className="flex items-center space-x-1">
+                  <Coins className="w-4 h-4 text-primary-gold" />
+                  <span className="text-sm font-bold text-primary-gold">
+                    {gameProfile.coins}
+                  </span>
+                </div>
+              </div>
+              <div className="w-full bg-gray-700 rounded-full h-2 mb-1">
+                <div
+                  className="game-progress-bar h-2 rounded-full transition-all duration-500"
+                  style={{
+                    width: `${(gameProfile.xp / gameProfile.totalXp) * 100}%`,
+                  }}
                 />
               </div>
+              <div className="flex justify-between text-xs text-gray-400">
+                <span>{gameProfile.xp} XP</span>
+                <span>{gameProfile.xpToNext} to next</span>
+              </div>
             </div>
 
-            {/* Navigation Actions */}
-            <div className="flex items-center space-x-3">
-              {/* Wishlist */}
+            {/* Navigation */}
+            <nav className="space-y-2 mb-8">
+              <button
+                onClick={() => setActiveTab("home")}
+                className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors ${
+                  activeTab === "home"
+                    ? "bg-primary-burgundy/20 text-primary-gold"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <Home className="w-5 h-5" />
+                <span>For You</span>
+              </button>
+              <button
+                onClick={() => setShowGameCenter(true)}
+                className="w-full flex items-center space-x-3 p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                <Gamepad2 className="w-5 h-5" />
+                <span>Game Center</span>
+                {gameProfile.dailyQuests.filter((q) => !q.completed).length >
+                  0 && (
+                  <Badge className="bg-primary-gold text-black text-xs">
+                    {gameProfile.dailyQuests.filter((q) => !q.completed).length}
+                  </Badge>
+                )}
+              </button>
               <button
                 onClick={() => setShowWishlist(true)}
-                className="relative h-10 px-4 bg-white border border-gray-200 text-gray-700 rounded-full font-medium hover:bg-gray-50 transition-colors flex items-center space-x-2"
+                className="w-full flex items-center space-x-3 p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
               >
-                <Heart className="w-4 h-4" />
-                <span className="hidden sm:inline">Wishlist</span>
+                <Heart className="w-5 h-5" />
+                <span>Wishlist</span>
                 {wishlist.length > 0 && (
-                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-primary-burgundy text-white rounded-full flex items-center justify-center text-xs font-bold">
+                  <Badge className="bg-primary-red text-white text-xs">
                     {wishlist.length}
-                  </div>
+                  </Badge>
                 )}
               </button>
-
-              {/* Order Tracking */}
-              <button
-                onClick={() => setShowOrderTracking(true)}
-                className="relative h-10 px-4 bg-white border border-gray-200 text-gray-700 rounded-full font-medium hover:bg-gray-50 transition-colors flex items-center space-x-2"
-              >
-                <Package className="w-4 h-4" />
-                <span className="hidden sm:inline">Orders</span>
-                {customerOrders.filter((o) => o.status !== "delivered").length >
-                  0 && (
-                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                    {
-                      customerOrders.filter((o) => o.status !== "delivered")
-                        .length
-                    }
-                  </div>
-                )}
-              </button>
-
-              {/* Cart */}
               <button
                 onClick={() => setShowCart(true)}
-                className="relative h-10 px-4 bg-primary-burgundy text-white rounded-full font-medium hover:bg-burgundy-light transition-colors flex items-center space-x-2"
+                className="w-full flex items-center space-x-3 p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
               >
-                <ShoppingCart className="w-4 h-4" />
-                <span className="hidden sm:inline">Cart</span>
+                <ShoppingCart className="w-5 h-5" />
+                <span>Cart</span>
                 {getTotalItems() > 0 && (
-                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-gray-900 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                  <Badge className="bg-primary-gold text-black text-xs">
+                    {getTotalItems()}
+                  </Badge>
+                )}
+              </button>
+            </nav>
+
+            {/* User Profile */}
+            <div className="mt-auto">
+              <button
+                onClick={() => setShowProfile(true)}
+                className="w-full flex items-center space-x-3 p-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                <div className="w-8 h-8 bg-gradient-to-r from-primary-burgundy to-primary-gold rounded-full flex items-center justify-center text-sm font-bold">
+                  👤
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-medium text-white">ShopperPro</p>
+                  <p className="text-xs text-primary-gold">
+                    Level {gameProfile.level}
+                  </p>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="flex-1 flex justify-center bg-black">
+            <div className="w-full max-w-sm bg-black relative">
+              <MobileContent />
+            </div>
+          </div>
+
+          {/* Right Sidebar - Simplified */}
+          <div className="w-80 bg-white p-4 overflow-y-auto">
+            <div className="space-y-6">
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 border-burgundy-soft focus:border-primary-burgundy"
+                />
+              </div>
+
+              {/* Current Product Info */}
+              {currentProduct && (
+                <div className="bg-gold-whisper rounded-xl p-4 border border-gold-soft">
+                  <h3 className="font-semibold text-primary-burgundy mb-2">
+                    Now Viewing
+                  </h3>
+                  <div className="flex items-center space-x-3">
+                    <div className="text-2xl">{currentProduct.image}</div>
+                    <div>
+                      <p className="font-medium text-sm">
+                        {currentProduct.name}
+                      </p>
+                      <p className="text-xs text-gray-600">
+                        {currentProduct.supplierName}
+                      </p>
+                      <p className="text-lg font-bold text-primary-gold">
+                        ${currentProduct.price}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Daily Quests - Compact */}
+              <div className="bg-burgundy-whisper rounded-xl p-4 border border-burgundy-soft">
+                <h3 className="font-semibold text-primary-burgundy mb-3 flex items-center">
+                  <Target className="w-4 h-4 mr-2" />
+                  Daily Quests
+                </h3>
+                <div className="space-y-2">
+                  {gameProfile.dailyQuests.slice(0, 2).map((quest) => (
+                    <div
+                      key={quest.id}
+                      className="flex items-center justify-between text-sm"
+                    >
+                      <span
+                        className={
+                          quest.completed
+                            ? "line-through text-gray-500"
+                            : "text-gray-700"
+                        }
+                      >
+                        {quest.title}
+                      </span>
+                      <div className="flex items-center space-x-1">
+                        <span className="text-xs text-primary-gold">
+                          {quest.progress}/{quest.target}
+                        </span>
+                        {quest.completed && (
+                          <Trophy className="w-3 h-3 text-primary-gold" />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile View */}
+        <div className="lg:hidden w-full">
+          <MobileContent />
+        </div>
+      </div>
+    </>
+  );
+};
+
+const MobileContent = () => {
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const containerRef = useRef(null);
+  const startY = useRef(0);
+  const currentY = useRef(0);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const currentX = useRef(0);
+  const [likedProducts, setLikedProducts] = useState(new Set());
+  const [followedSuppliers, setFollowedSuppliers] = useState(new Set());
+  const [activeTab, setActiveTab] = useState("home");
+
+  const products = [
+    {
+      _id: "1",
+      name: "Handwoven Agaseke Basket",
+      description:
+        "Traditional Rwandan peace basket ✨ Each piece tells a story of unity 🕊️",
+      price: 45.99,
+      originalPrice: 65.99,
+      stockQuantity: 25,
+      category: "Arts & Crafts",
+      image: "🧺",
+      supplierId: "sup1",
+      supplierName: "Kigali Artisan Collective",
+      rating: 4.8,
+      totalReviews: 34,
+      views: 1240,
+      likes: 892,
+      shares: 156,
+      trending: true,
+      discount: 30,
+      xpReward: 25,
+    },
+    {
+      _id: "2",
+      name: "Rwandan Coffee Beans",
+      description:
+        "Premium Arabica coffee ☕ Wake up to the taste of Rwanda! ☀️",
+      price: 28.5,
+      originalPrice: 35.0,
+      stockQuantity: 35,
+      category: "Food & Beverages",
+      image: "☕",
+      supplierId: "sup2",
+      supplierName: "Thousand Hills Coffee",
+      rating: 4.9,
+      totalReviews: 67,
+      views: 2150,
+      likes: 1456,
+      shares: 234,
+      trending: true,
+      discount: 19,
+      xpReward: 30,
+    },
+    {
+      _id: "3",
+      name: "Imigongo Art Painting",
+      description: "Traditional geometric art 🎨 Ancient meets modern style ✨",
+      price: 125.0,
+      originalPrice: 150.0,
+      stockQuantity: 8,
+      category: "Arts & Crafts",
+      image: "🎨",
+      supplierId: "sup1",
+      supplierName: "Kigali Artisan Collective",
+      rating: 4.7,
+      totalReviews: 23,
+      views: 890,
+      likes: 567,
+      shares: 89,
+      trending: false,
+      discount: 17,
+      xpReward: 40,
+    },
+  ];
+
+  const suppliers = [
+    {
+      _id: "sup1",
+      name: "Kigali Artisan Collective",
+      username: "@kigali_artisans",
+      description:
+        "Traditional Rwandan crafts ✨ Preserving culture through art 🎨",
+      image: "🏪",
+      rating: 4.8,
+      totalReviews: 156,
+      location: "Kigali, Rwanda",
+      verified: true,
+      followers: "12.5K",
+      responseTime: "Usually responds within 2 hours",
+      categories: ["Arts & Crafts", "Home Decor", "Traditional Items"],
+      products: [
+        {
+          _id: "s1p1",
+          name: "Handwoven Agaseke Basket",
+          image: "🧺",
+          price: 45.99,
+          category: "Arts & Crafts",
+          trending: true,
+        },
+        {
+          _id: "s1p2",
+          name: "Imigongo Art Painting",
+          image: "🎨",
+          price: 125.0,
+          category: "Arts & Crafts",
+          trending: false,
+        },
+        {
+          _id: "s1p3",
+          name: "Traditional Pottery",
+          image: "🏺",
+          price: 35.0,
+          category: "Home Decor",
+          trending: false,
+        },
+        {
+          _id: "s1p4",
+          name: "Woven Table Mat",
+          image: "🪑",
+          price: 18.99,
+          category: "Home Decor",
+          trending: true,
+        },
+        {
+          _id: "s1p5",
+          name: "Cultural Mask",
+          image: "🎭",
+          price: 89.99,
+          category: "Traditional Items",
+          trending: false,
+        },
+        {
+          _id: "s1p6",
+          name: "Beaded Jewelry",
+          image: "📿",
+          price: 25.5,
+          category: "Arts & Crafts",
+          trending: true,
+        },
+      ],
+    },
+    {
+      _id: "sup2",
+      name: "Thousand Hills Coffee",
+      username: "@thousandhills_coffee",
+      description:
+        "Premium single-origin coffee ☕ From farm to cup with love 💚",
+      image: "☕",
+      rating: 4.9,
+      totalReviews: 203,
+      location: "Nyungwe, Rwanda",
+      verified: true,
+      followers: "8.2K",
+      responseTime: "Usually responds within 1 hour",
+      categories: ["Coffee", "Beverages", "Organic Products"],
+      products: [
+        {
+          _id: "s2p1",
+          name: "Rwandan Coffee Beans",
+          image: "☕",
+          price: 28.5,
+          category: "Coffee",
+          trending: true,
+        },
+        {
+          _id: "s2p2",
+          name: "Ground Coffee",
+          image: "🫘",
+          price: 22.0,
+          category: "Coffee",
+          trending: false,
+        },
+        {
+          _id: "s2p3",
+          name: "Coffee Gift Set",
+          image: "🎁",
+          price: 65.0,
+          category: "Coffee",
+          trending: true,
+        },
+        {
+          _id: "s2p4",
+          name: "Organic Honey",
+          image: "🍯",
+          price: 15.99,
+          category: "Organic Products",
+          trending: false,
+        },
+      ],
+    },
+  ];
+
+  const [currentProductIndex, setCurrentProductIndex] = useState(0);
+  const currentProduct = products[currentProductIndex];
+  const currentSupplier = suppliers.find(
+    (s) => s._id === currentProduct?.supplierId
+  );
+
+  const [showProductDetails, setShowProductDetails] = useState(false);
+  const [showSupplierInfo, setShowSupplierInfo] = useState(false);
+  const [showCart, setShowCart] = useState(false);
+  const [showWishlist, setShowWishlist] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [gameProfile] = useState({
+    level: 12,
+    xp: 2450,
+    xpToNext: 550,
+    totalXp: 3000,
+    coins: 1250,
+    gems: 45,
+    streak: 7,
+    achievements: [],
+    badges: ["Early Adopter", "Trendsetter", "Social Butterfly"],
+    dailyQuests: [
+      {
+        id: 1,
+        title: "Like 5 products",
+        progress: 3,
+        target: 5,
+        reward: 50,
+        completed: false,
+      },
+      {
+        id: 2,
+        title: "Add 2 items to cart",
+        progress: 2,
+        target: 2,
+        reward: 75,
+        completed: true,
+      },
+      {
+        id: 3,
+        title: "Share a product",
+        progress: 0,
+        target: 1,
+        reward: 100,
+        completed: false,
+      },
+    ],
+    weeklyChallenge: {
+      title: "Shopping Spree",
+      description: "Purchase 3 items this week",
+      progress: 1,
+      target: 3,
+      reward: 500,
+      timeLeft: "4 days",
+    },
+  });
+  const [cart] = useState([]);
+  const [wishlist] = useState([]);
+
+  const getTotalItems = () => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const handleTouchStart = (e) => {
+    startY.current = e.touches[0].clientY;
+    startX.current = e.touches[0].clientX;
+    isDragging.current = true;
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging.current) return;
+    currentY.current = e.touches[0].clientY;
+    currentX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+
+    const deltaY = startY.current - currentY.current;
+    const deltaX = startX.current - currentX.current;
+    const threshold = 50;
+
+    if (Math.abs(deltaY) > threshold && Math.abs(deltaY) > Math.abs(deltaX)) {
+      // Vertical swipe
+      if (deltaY > 0) {
+        nextProduct();
+      } else {
+        prevProduct();
+      }
+    } else if (
+      Math.abs(deltaX) > threshold &&
+      Math.abs(deltaX) > Math.abs(deltaY)
+    ) {
+      // Horizontal swipe
+      if (deltaX > 0) {
+        setShowProductDetails(true);
+      } else {
+        setShowSupplierInfo(true);
+      }
+    }
+  };
+
+  const nextProduct = useCallback(() => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentProductIndex((prev) => (prev + 1) % products.length);
+    setTimeout(() => setIsTransitioning(false), 300);
+  }, [isTransitioning, products.length]);
+
+  const prevProduct = useCallback(() => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrentProductIndex(
+      (prev) => (prev - 1 + products.length) % products.length
+    );
+    setTimeout(() => setIsTransitioning(false), 300);
+  }, [isTransitioning, products.length]);
+
+  const toggleLike = (productId) => {
+    setLikedProducts((prev) => {
+      const newLiked = new Set(prev);
+      if (newLiked.has(productId)) {
+        newLiked.delete(productId);
+      } else {
+        newLiked.add(productId);
+      }
+      return newLiked;
+    });
+  };
+
+  const isInWishlist = (productId) => {
+    return wishlist.some((item) => item._id === productId);
+  };
+
+  return (
+    <div className="h-screen bg-black text-white overflow-hidden relative">
+      {/* Main Product Display - Cleaner */}
+      <div
+        ref={containerRef}
+        className={`h-full w-full relative transition-all duration-300 ${
+          isTransitioning ? "scale-95 opacity-80" : "scale-100 opacity-100"
+        }`}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Simplified Background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-burgundy/30 via-primary-orange/20 to-primary-gold/30" />
+        </div>
+
+        {/* Product Image - Cleaner */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div
+            className={`text-[18rem] opacity-25 select-none pointer-events-none transition-all duration-500 ${
+              isTransitioning ? "scale-110" : "scale-100"
+            }`}
+          >
+            {currentProduct?.image}
+          </div>
+        </div>
+
+        {/* Top Bar - Minimalistic */}
+        <div className="absolute top-0 left-0 right-0 z-20 pt-12 px-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-primary-burgundy to-primary-gold rounded-full flex items-center justify-center">
+                <span className="text-sm font-bold">R</span>
+              </div>
+              <span className="text-sm font-medium">Rwanda Shop</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              {/* Game Stats - Mobile */}
+              <div className="flex items-center space-x-2 bg-black/20 backdrop-blur-md rounded-full px-3 py-1">
+                <div className="flex items-center space-x-1">
+                  <span className="text-xs font-bold text-primary-gold">
+                    L{gameProfile.level}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Coins className="w-3 h-3 text-primary-gold" />
+                  <span className="text-xs font-bold text-primary-gold">
+                    {gameProfile.coins}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowCart(true)}
+                className="relative w-10 h-10 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {getTotalItems() > 0 && (
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary-red rounded-full flex items-center justify-center text-xs font-bold">
                     {getTotalItems()}
                   </div>
                 )}
@@ -1169,732 +1387,307 @@ const CustomerPage = () => {
             </div>
           </div>
         </div>
-      </nav>
 
-      {/* Hero Section - Only show on marketplace view */}
-      {activeView === "marketplace" && (
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div
-              className={`transition-all duration-1000 ${
-                isLoaded
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
+        {/* Swipe Indicators - Moved Higher */}
+        <div className="absolute left-4 top-1/3 transform -translate-y-1/2 z-10">
+          <div
+            className="w-16 h-24 bg-black/20 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-black/30 transition-colors border border-white/10"
+            onClick={() => setShowProductDetails(true)}
+          >
+            <ChevronLeft className="w-5 h-5 mb-1" />
+            <span className="text-xs text-center">Details</span>
+          </div>
+        </div>
+
+        <div className="absolute right-4 top-1/3 transform -translate-y-1/2 z-10">
+          <div
+            className="w-16 h-24 bg-black/20 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-black/30 transition-colors border border-white/10"
+            onClick={() => setShowSupplierInfo(true)}
+          >
+            <ChevronRight className="w-5 h-5 mb-1" />
+            <span className="text-xs text-center">Supplier</span>
+          </div>
+        </div>
+
+        {/* Clean Product Info Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 z-20 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+          <div className="flex items-end justify-between">
+            {/* Product Details - Simplified */}
+            <div className="flex-1 mr-4">
+              {/* Minimal Badges */}
+              {currentProduct?.trending && (
+                <div className="inline-flex items-center space-x-1 bg-primary-gold/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold mb-3 border border-primary-gold/30">
+                  <Flame className="w-3 h-3 text-primary-gold" />
+                  <span className="text-primary-gold">TRENDING</span>
+                </div>
+              )}
+
+              {/* Price - Clean */}
+              <div className="flex items-center space-x-3 mb-2">
+                <span className="text-3xl font-bold text-primary-gold">
+                  ${currentProduct?.price}
+                </span>
+                {currentProduct?.originalPrice > currentProduct?.price && (
+                  <>
+                    <span className="text-lg text-gray-400 line-through">
+                      ${currentProduct?.originalPrice}
+                    </span>
+                    <div className="bg-primary-red px-2 py-1 rounded-full text-xs font-bold">
+                      -{currentProduct?.discount}%
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Product Name */}
+              <h2 className="text-xl font-bold mb-2 leading-tight">
+                {currentProduct?.name}
+              </h2>
+
+              {/* Description - Cleaner */}
+              <p className="text-sm text-gray-300 mb-3 leading-relaxed line-clamp-2">
+                {currentProduct?.description}
+              </p>
+
+              {/* Supplier Info - Minimal */}
+              <div className="flex items-center space-x-2 mb-3">
+                <div className="text-lg">{currentSupplier?.image}</div>
+                <span className="text-sm text-gray-300">
+                  {currentSupplier?.username}
+                </span>
+                {currentSupplier?.verified && (
+                  <Award className="w-4 h-4 text-primary-gold" />
+                )}
+              </div>
+
+              {/* Minimal Stats */}
+              <div className="flex items-center space-x-4 text-xs text-gray-400">
+                <div className="flex items-center space-x-1">
+                  <Eye className="w-3 h-3" />
+                  <span>{currentProduct?.views?.toLocaleString()}</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Heart
+                    className={`w-3 h-3 ${
+                      likedProducts.has(currentProduct?._id)
+                        ? "text-primary-red fill-current"
+                        : ""
+                    }`}
+                  />
+                  <span>{currentProduct?.likes?.toLocaleString()}</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Star className="w-3 h-3 text-primary-gold fill-current" />
+                  <span>{currentProduct?.rating}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons - Cleaner */}
+            <div className="flex flex-col space-y-3">
+              <button
+                onClick={() => toggleLike(currentProduct?._id)}
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  likedProducts.has(currentProduct?._id)
+                    ? "bg-primary-red text-white scale-110"
+                    : "bg-black/20 backdrop-blur-md hover:bg-black/30 hover:scale-110"
+                }`}
+              >
+                <Heart
+                  className={`w-5 h-5 ${
+                    likedProducts.has(currentProduct?._id) ? "fill-current" : ""
+                  }`}
+                />
+              </button>
+
+              <button
+                onClick={() => setShowWishlist(true)}
+                className="w-12 h-12 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-black/30 transition-all duration-300 hover:scale-110"
+              >
+                <Bookmark className="w-5 h-5" />
+              </button>
+
+              <button
+                onClick={() => setShowChat(true)}
+                className="w-12 h-12 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-black/30 transition-all duration-300 hover:scale-110"
+              >
+                <MessageSquare className="w-5 h-5" />
+              </button>
+
+              <button
+                onClick={() => {}}
+                className="w-12 h-12 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-black/30 transition-all duration-300 hover:scale-110"
+              >
+                <Share2 className="w-5 h-5" />
+              </button>
+
+              <button
+                onClick={() => setShowCart(true)}
+                className="w-12 h-12 bg-gradient-to-r from-primary-burgundy to-primary-gold rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300"
+              >
+                <ShoppingCart className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Clean Navigation Dots */}
+        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-20">
+          <div className="flex space-x-2 bg-black/20 backdrop-blur-sm rounded-full px-4 py-2">
+            {products.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentProductIndex(index)}
+                className={`transition-all duration-300 ${
+                  index === currentProductIndex
+                    ? "w-6 h-2 bg-primary-gold rounded-full"
+                    : "w-2 h-2 bg-white/40 rounded-full hover:bg-white/60"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom Navigation - Mobile */}
+        <div className="lg:hidden absolute bottom-0 left-0 right-0 z-30 bg-black/80 backdrop-blur-md border-t border-white/10">
+          <div className="flex items-center justify-around py-2">
+            <button
+              onClick={() => setActiveTab("home")}
+              className={`flex flex-col items-center p-2 ${
+                activeTab === "home" ? "text-primary-gold" : "text-gray-400"
               }`}
             >
-              <h2 className="text-5xl md:text-6xl font-light text-gray-900 mb-6 leading-tight">
-                Discover Rwanda's
-                <br />
-                <span className="font-semibold text-primary-burgundy">
-                  Finest Treasures
-                </span>
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed">
-                Connect with local suppliers and discover authentic crafts,
-                premium coffee, and cultural artifacts from the Land of a
-                Thousand Hills
-              </p>
-
-              {/* Trust Indicators */}
-              <div className="flex justify-center items-center space-x-12 text-gray-500">
-                <div className="flex flex-col items-center space-y-2">
-                  <div className="w-12 h-12 bg-gold-whisper rounded-full flex items-center justify-center">
-                    <Package className="w-6 h-6 text-primary-burgundy" />
-                  </div>
-                  <span className="text-sm font-medium">Authentic Quality</span>
-                </div>
-                <div className="flex flex-col items-center space-y-2">
-                  <div className="w-12 h-12 bg-gold-whisper rounded-full flex items-center justify-center">
-                    <Truck className="w-6 h-6 text-primary-burgundy" />
-                  </div>
-                  <span className="text-sm font-medium">Fast Delivery</span>
-                </div>
-                <div className="flex flex-col items-center space-y-2">
-                  <div className="w-12 h-12 bg-gold-whisper rounded-full flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-primary-burgundy" />
-                  </div>
-                  <span className="text-sm font-medium">Secure Payment</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Categories - Show for products view */}
-      {activeView === "products" && (
-        <section className="py-8 bg-gray-50 border-y border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-center space-x-4 overflow-x-auto">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-6 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                    selectedCategory === category
-                      ? "bg-primary-burgundy text-white"
-                      : "bg-white text-gray-600 hover:bg-gold-whisper hover:text-primary-burgundy border border-gray-200"
-                  }`}
-                >
-                  {category === "all" ? "All Products" : category}
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Main Content */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {activeView === "marketplace" && renderMarketplace()}
-          {activeView === "suppliers" && renderSuppliers()}
-          {activeView === "products" && renderProducts()}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <div className="w-8 h-8 bg-primary-burgundy rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                R
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">Rwanda Treasures</h3>
-                <p className="text-gray-400 text-sm">Ubwoba bw'u Rwanda</p>
-              </div>
-            </div>
-            <div className="text-center md:text-right">
-              <p className="text-gray-400 text-sm">
-                © 2025 Rwanda Treasures. Made with ❤️ in the Land of a Thousand
-                Hills.
-              </p>
-            </div>
+              <Home className="w-5 h-5" />
+              <span className="text-xs mt-1">Home</span>
+            </button>
+            <button
+              onClick={() => {}}
+              className="flex flex-col items-center p-2 text-gray-400 relative"
+            >
+              <Gamepad2 className="w-5 h-5" />
+              <span className="text-xs mt-1">Games</span>
+              {/*{gameProfile.dailyQuests.filter((q) => !q.completed).length > 0 && (*/}
+              {/*    <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary-gold rounded-full flex items-center justify-center text-xs font-bold text-black">*/}
+              {/*        {gameProfile.dailyQuests.filter((q) => !q.completed).length}*/}
+              {/*    </div>*/}
+              {/*)}*/}
+            </button>
+            <button
+              onClick={() => setShowWishlist(true)}
+              className="flex flex-col items-center p-2 text-gray-400 relative"
+            >
+              <Heart className="w-5 h-5" />
+              <span className="text-xs mt-1">Wishlist</span>
+              {/*{wishlist.length > 0 && (*/}
+              {/*    <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary-red rounded-full flex items-center justify-center text-xs font-bold">*/}
+              {/*        {wishlist.length}*/}
+              {/*    </div>*/}
+              {/*)}*/}
+            </button>
+            <button
+              onClick={() => setShowProfile(true)}
+              className="flex flex-col items-center p-2 text-gray-400"
+            >
+              <UserCircle className="w-5 h-5" />
+              <span className="text-xs mt-1">Profile</span>
+            </button>
           </div>
         </div>
-      </footer>
+      </div>
 
-      {/* Supplier Profile Modal */}
-      {showSupplierProfile && selectedSupplier && (
-        <Dialog
-          open={showSupplierProfile}
-          onOpenChange={setShowSupplierProfile}
-        >
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center space-x-3">
-                <span className="text-3xl">{selectedSupplier.image}</span>
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <span>{selectedSupplier.name}</span>
-                    {selectedSupplier.verified && (
-                      <Badge className="bg-green-100 text-green-800">
-                        <Award className="w-3 h-3 mr-1" />
-                        Verified
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="flex items-center mt-1">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(selectedSupplier.rating)
-                              ? "text-yellow-400 fill-current"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-500 ml-2">
-                      {selectedSupplier.rating} ({selectedSupplier.totalReviews}{" "}
-                      reviews)
-                    </span>
-                  </div>
-                </div>
-              </DialogTitle>
-            </DialogHeader>
-
-            <Tabs defaultValue="products" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="products">Products</TabsTrigger>
-                <TabsTrigger value="about">About</TabsTrigger>
-                <TabsTrigger value="reviews">Reviews</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="products" className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">
-                    Products by {selectedSupplier.name}
-                  </h3>
-                  <Button
-                    onClick={() => startChat(selectedSupplier)}
-                    className="bg-primary-burgundy hover:bg-burgundy-light text-white"
-                  >
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    Chat with Supplier
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {getSupplierProducts(selectedSupplier._id).map((product) => (
-                    <Card
-                      key={product._id}
-                      className="cursor-pointer hover:shadow-md transition-shadow"
-                    >
-                      <CardContent className="p-4">
-                        <div className="text-center mb-3">
-                          <div className="text-4xl mb-2">{product.image}</div>
-                          <h4 className="font-semibold text-gray-900">
-                            {product.name}
-                          </h4>
-                        </div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-lg font-bold text-primary-burgundy">
-                            ${product.price}
-                          </span>
-                          <div className="flex items-center">
-                            <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                            <span className="text-xs text-gray-500 ml-1">
-                              {product.rating}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => openProductDetails(product)}
-                            className="flex-1"
-                          >
-                            View Details
-                          </Button>
-                          <Button
-                            size="sm"
-                            onClick={() => addToCart(product)}
-                            className="flex-1 bg-primary-burgundy hover:bg-burgundy-light text-white"
-                          >
-                            Add to Cart
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="about" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">About</h3>
-                    <p className="text-gray-600 mb-4">
-                      {selectedSupplier.description}
-                    </p>
-                    <div className="space-y-2">
-                      <div className="flex items-center text-sm">
-                        <MapPin className="w-4 h-4 mr-2 text-gray-400" />
-                        {selectedSupplier.location}
-                      </div>
-                      <div className="flex items-center text-sm">
-                        <Phone className="w-4 h-4 mr-2 text-gray-400" />
-                        {selectedSupplier.phone}
-                      </div>
-                      <div className="flex items-center text-sm">
-                        <Mail className="w-4 h-4 mr-2 text-gray-400" />
-                        {selectedSupplier.email}
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">Details</h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Established:</span>
-                        <span>{selectedSupplier.established}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Total Products:</span>
-                        <span>{selectedSupplier.totalProducts}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Response Time:</span>
-                        <span>{selectedSupplier.responseTime}</span>
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <h4 className="font-medium mb-2">Specialties</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedSupplier.specialties.map((specialty) => (
-                          <Badge key={specialty} variant="outline">
-                            {specialty}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="reviews" className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">Customer Reviews</h3>
-                  <Button
-                    onClick={() =>
-                      openReviewForm("supplier", selectedSupplier._id)
-                    }
-                    variant="outline"
-                    className="border-primary-burgundy text-primary-burgundy hover:bg-gold-whisper"
-                  >
-                    Write Review
-                  </Button>
-                </div>
-                <div className="space-y-4">
-                  {getSupplierReviews(selectedSupplier._id).map((review) => (
-                    <Card key={review._id}>
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <div className="flex items-center space-x-2">
-                              <span className="font-medium">
-                                {review.customerName}
-                              </span>
-                              {review.verified && (
-                                <Badge className="bg-green-100 text-green-800 text-xs">
-                                  Verified Purchase
-                                </Badge>
-                              )}
-                            </div>
-                            <div className="flex items-center mt-1">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-3 h-3 ${
-                                    i < review.rating
-                                      ? "text-yellow-400 fill-current"
-                                      : "text-gray-300"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          <span className="text-xs text-gray-500">
-                            {review.date}
-                          </span>
-                        </div>
-                        <p className="text-gray-600">{review.comment}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-            </Tabs>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Product Details Modal */}
-      {showProductDetails && selectedProduct && (
-        <Dialog open={showProductDetails} onOpenChange={setShowProductDetails}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center justify-between">
-                <span>{selectedProduct.name}</span>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      const supplier = suppliers.find(
-                        (s) => s._id === selectedProduct.supplierId
-                      );
-                      if (supplier) startChat(supplier);
-                    }}
-                  >
-                    <MessageSquare className="w-4 h-4 mr-1" />
-                    Chat
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => addToCart(selectedProduct)}
-                    className="bg-primary-burgundy hover:bg-burgundy-light text-white"
-                  >
-                    Add to Cart
-                  </Button>
-                </div>
-              </DialogTitle>
-            </DialogHeader>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <div className="text-center mb-4">
-                  <div className="text-8xl mb-4">{selectedProduct.image}</div>
-                  <div className="flex justify-center space-x-2">
-                    {selectedProduct.images.map((img, index) => (
-                      <div
-                        key={index}
-                        className="text-2xl p-2 border rounded-lg cursor-pointer hover:bg-gray-50"
-                      >
-                        {img}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-3xl font-bold text-primary-burgundy">
-                      ${selectedProduct.price}
-                    </span>
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(selectedProduct.rating)
-                              ? "text-yellow-400 fill-current"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                      <span className="text-sm text-gray-500 ml-2">
-                        {selectedProduct.rating} ({selectedProduct.totalReviews}{" "}
-                        reviews)
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 mb-4">
-                    {selectedProduct.description}
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Specifications</h3>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    {Object.entries(selectedProduct.specifications).map(
-                      ([key, value]) => (
-                        <div key={key} className="flex justify-between">
-                          <span className="text-gray-600 capitalize">
-                            {key}:
-                          </span>
-                          <span>{value}</span>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Supplier</h3>
-                  <div className="flex items-center space-x-3 p-3 border rounded-lg">
-                    <div className="text-2xl">
-                      {
-                        suppliers.find(
-                          (s) => s._id === selectedProduct.supplierId
-                        )?.image
-                      }
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium">
-                        {selectedProduct.supplierName}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {
-                          suppliers.find(
-                            (s) => s._id === selectedProduct.supplierId
-                          )?.location
-                        }
-                      </p>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        const supplier = suppliers.find(
-                          (s) => s._id === selectedProduct.supplierId
-                        );
-                        if (supplier) openSupplierProfile(supplier);
-                      }}
-                    >
-                      View Store
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex space-x-2">
-                  <Button
-                    onClick={() =>
-                      openReviewForm("product", selectedProduct._id)
-                    }
-                    variant="outline"
-                    className="flex-1 border-primary-burgundy text-primary-burgundy hover:bg-gold-whisper"
-                  >
-                    Write Review
-                  </Button>
-                  <Button
-                    onClick={() => openBulkOrderForm(selectedProduct)}
-                    variant="outline"
-                    className="flex-1 border-blue-500 text-blue-600 hover:bg-blue-50"
-                  >
-                    Bulk Order
-                  </Button>
-                  <Button
-                    onClick={() => addToCart(selectedProduct)}
-                    className="flex-1 bg-primary-burgundy hover:bg-burgundy-light text-white"
-                  >
-                    Add to Cart
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-4">Customer Reviews</h3>
-              <div className="space-y-4">
-                {getProductReviews(selectedProduct._id).map((review) => (
-                  <Card key={review._id}>
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <div className="flex items-center space-x-2">
-                            <span className="font-medium">
-                              {review.customerName}
-                            </span>
-                            {review.verified && (
-                              <Badge className="bg-green-100 text-green-800 text-xs">
-                                Verified Purchase
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="flex items-center mt-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-3 h-3 ${
-                                  i < review.rating
-                                    ? "text-yellow-400 fill-current"
-                                    : "text-gray-300"
-                                }`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                        <span className="text-xs text-gray-500">
-                          {review.date}
-                        </span>
-                      </div>
-                      <p className="text-gray-600">{review.comment}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Chat Modal */}
-      {showChat && chatSupplier && (
-        <Dialog open={showChat} onOpenChange={setShowChat}>
-          <DialogContent className="max-w-2xl max-h-[80vh]">
-            <DialogHeader>
-              <DialogTitle className="flex items-center space-x-3">
-                <span className="text-2xl">{chatSupplier.image}</span>
-                <div>
-                  <span>Chat with {chatSupplier.name}</span>
-                  <p className="text-sm text-gray-500 font-normal">
-                    {chatSupplier.responseTime}
-                  </p>
-                </div>
-              </DialogTitle>
-            </DialogHeader>
-            <div className="flex flex-col h-96">
-              <div className="flex-1 overflow-y-auto p-4 border border-gray-200 rounded-lg mb-4 space-y-4">
-                {chatMessages
-                  .filter((m) => m.supplierId === chatSupplier._id)
-                  .map((message) => (
-                    <div
-                      key={message.id}
-                      className={`${
-                        message.isFromCustomer ? "text-right" : "text-left"
-                      }`}
-                    >
-                      <div
-                        className={`inline-block p-3 rounded-lg max-w-xs ${
-                          message.isFromCustomer
-                            ? "bg-primary-burgundy text-white"
-                            : "bg-gray-100 text-gray-900"
-                        }`}
-                      >
-                        <p className="text-sm">{message.message}</p>
-                        <p
-                          className={`text-xs mt-1 ${
-                            message.isFromCustomer
-                              ? "text-primary-gold"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          {message.timestamp}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-              <div className="flex space-x-2">
-                <Input
-                  placeholder="Type your message..."
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                      sendMessage();
-                    }
-                  }}
-                  className="flex-1"
-                />
-                <Button
-                  onClick={sendMessage}
-                  className="bg-primary-burgundy hover:bg-burgundy-light text-white"
-                >
-                  <Send className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Review Form Modal */}
-      {showReviewForm && reviewTarget && (
-        <Dialog open={showReviewForm} onOpenChange={setShowReviewForm}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>
-                Write a Review for{" "}
-                {reviewTarget.type === "product"
-                  ? products.find((p) => p._id === reviewTarget.id)?.name
-                  : suppliers.find((s) => s._id === reviewTarget.id)?.name}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Rating
-                </label>
-                <div className="flex space-x-1">
-                  {[1, 2, 3, 4, 5].map((rating) => (
-                    <button
-                      key={rating}
-                      onClick={() => setNewReview({ ...newReview, rating })}
-                      className="focus:outline-none"
-                    >
-                      <Star
-                        className={`w-6 h-6 ${
-                          rating <= newReview.rating
-                            ? "text-yellow-400 fill-current"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Comment
-                </label>
-                <textarea
-                  value={newReview.comment}
-                  onChange={(e) =>
-                    setNewReview({ ...newReview, comment: e.target.value })
-                  }
-                  placeholder="Share your experience..."
-                  className="w-full p-3 border border-gray-200 rounded-lg h-24 resize-none focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy"
-                />
-              </div>
-              <Button
-                onClick={submitReview}
-                className="w-full bg-primary-burgundy hover:bg-burgundy-light text-white"
-              >
-                Submit Review
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Cart Sidebar */}
+      {/* Enhanced Cart with Gamification */}
       {showCart && (
         <div className="fixed inset-0 z-50 overflow-hidden">
           <div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             onClick={() => setShowCart(false)}
           />
-          <div className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl">
+          <div className="absolute right-0 top-0 h-full w-full max-w-sm bg-gray-900 text-white border-l border-gray-700">
             <div className="flex flex-col h-full">
               {/* Cart Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Shopping Cart
-                </h2>
+              <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gradient-to-r from-primary-burgundy/20 to-primary-gold/20">
+                <div>
+                  <h2 className="text-lg font-semibold">Shopping Cart</h2>
+                  <p className="text-xs text-gray-400">
+                    {getTotalItems()} items
+                  </p>
+                </div>
                 <button
                   onClick={() => setShowCart(false)}
-                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                  className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors"
                 >
-                  <X className="w-4 h-4 text-gray-600" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Cart Items */}
-              <div className="flex-1 overflow-y-auto p-6">
+              <div className="flex-1 overflow-y-auto p-4">
                 {cart.length === 0 ? (
                   <div className="text-center py-12">
-                    <ShoppingCart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">Your cart is empty</p>
+                    <ShoppingCart className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-400 mb-2">
+                      Your cart is empty
+                    </h3>
+                    <p className="text-gray-500 mb-4">
+                      Add some amazing products!
+                    </p>
+                    <Button
+                      onClick={() => setShowCart(false)}
+                      className="bg-gradient-to-r from-primary-burgundy to-primary-gold hover:from-burgundy-light hover:to-gold-light text-white"
+                    >
+                      Continue Shopping
+                    </Button>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {cart.map((item) => (
                       <div
                         key={item._id}
-                        className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl"
+                        className="flex items-center space-x-3 bg-gray-800 p-3 rounded-xl border border-gray-700"
                       >
-                        <div className="text-2xl">{item.image}</div>
+                        <div className="text-3xl">{item.image}</div>
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-900 text-sm">
+                          <h4 className="font-medium text-white text-sm leading-tight">
                             {item.name}
                           </h4>
-                          <p className="text-primary-burgundy font-semibold text-sm">
+                          <p className="text-primary-gold font-semibold text-sm">
                             ${item.price}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-gray-400">
                             {item.supplierName}
                           </p>
                         </div>
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() =>
-                              updateCartQuantity(item._id, item.quantity - 1)
-                            }
-                            className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled={item.quantity <= 1}
+                            onClick={() => {
+                              //setCart((prevCart) =>
+                              //    prevCart.map((cartItem) =>
+                              //        cartItem._id === item._id
+                              //            ? { ...cartItem, quantity: Math.max(1, cartItem.quantity - 1) }
+                              //            : cartItem,
+                              //    ),
+                              //);
+                            }}
+                            className="w-7 h-7 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center transition-colors"
                           >
-                            <Minus className="w-3 h-3 text-gray-600" />
+                            <Minus className="w-3 h-3" />
                           </button>
-                          <span className="w-6 text-center text-sm font-medium text-gray-900">
-                            {item.quantity}
+                          <span className="w-8 text-center text-sm font-medium">
+                            {/*item.quantity*/}1
                           </span>
                           <button
-                            onClick={() =>
-                              updateCartQuantity(item._id, item.quantity + 1)
-                            }
-                            className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled={item.quantity >= item.stockQuantity}
+                            onClick={() => {
+                              //setCart((prevCart) =>
+                              //    prevCart.map((cartItem) =>
+                              //        cartItem._id === item._id
+                              //            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+                              //            : cartItem,
+                              //    ),
+                              //);
+                            }}
+                            className="w-7 h-7 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center transition-colors"
                           >
-                            <Plus className="w-3 h-3 text-gray-600" />
+                            <Plus className="w-3 h-3" />
                           </button>
                         </div>
                       </div>
@@ -1905,24 +1698,35 @@ const CustomerPage = () => {
 
               {/* Cart Footer */}
               {cart.length > 0 && (
-                <div className="border-t border-gray-100 p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-lg font-semibold text-gray-900">
-                      Total:
-                    </span>
-                    <span className="text-2xl font-bold text-primary-burgundy">
-                      ${getTotalPrice().toFixed(2)}
-                    </span>
+                <div className="border-t border-gray-700 p-4 bg-gradient-to-r from-primary-burgundy/10 to-primary-gold/10">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-semibold">Total:</span>
+                      <span className="text-3xl font-bold text-primary-gold">
+                        ${/*getTotalPrice().toFixed(2)*/ 0}
+                      </span>
+                    </div>
+
+                    <Button className="w-full bg-gradient-to-r from-primary-burgundy to-primary-gold hover:from-burgundy-light hover:to-gold-light text-white py-3 text-lg font-semibold">
+                      <CreditCard className="w-5 h-5 mr-2" />
+                      Checkout Now
+                    </Button>
+
+                    <div className="flex items-center justify-center space-x-4 text-xs text-gray-400">
+                      <div className="flex items-center space-x-1">
+                        <Shield className="w-3 h-3" />
+                        <span>Secure</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <Truck className="w-3 h-3" />
+                        <span>Fast Delivery</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <Gift className="w-3 h-3" />
+                        <span>Free Returns</span>
+                      </div>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => {
-                      setShowCart(false);
-                      setShowCheckout(true);
-                    }}
-                    className="w-full bg-primary-burgundy text-white py-3 rounded-xl font-semibold hover:bg-burgundy-light transition-colors"
-                  >
-                    Proceed to Checkout
-                  </button>
                 </div>
               )}
             </div>
@@ -1930,242 +1734,205 @@ const CustomerPage = () => {
         </div>
       )}
 
-      {/* Checkout Modal */}
-      {showCheckout && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen p-4">
-            <div
-              className="absolute inset-0 bg-black/50"
-              onClick={() => setShowCheckout(false)}
-            />
-            <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
-              <div className="p-8">
-                {/* Checkout Header */}
-                <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-2xl font-semibold text-gray-900">
-                    Complete Your Order
-                  </h2>
-                  <button
-                    onClick={() => setShowCheckout(false)}
-                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-                  >
-                    <X className="w-4 h-4 text-gray-600" />
-                  </button>
-                </div>
+      {/* Enhanced Product Details Modal */}
+      {showProductDetails && (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setShowProductDetails(false)}
+          />
+          <div className="absolute right-0 top-0 h-full w-full max-w-md bg-gray-900 text-white border-l border-gray-700">
+            <div className="flex flex-col h-full">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gradient-to-r from-primary-burgundy/20 to-primary-gold/20">
+                <h2 className="text-lg font-semibold">Product Details</h2>
+                <button
+                  onClick={() => setShowProductDetails(false)}
+                  className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
 
-                {/* Customer Information Form */}
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <div className="space-y-4">
+                  {/* Product Image and Name */}
+                  <div className="flex items-center space-x-4">
+                    <div className="text-5xl">{currentProduct?.image}</div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={customerInfo.name}
-                        onChange={(e) =>
-                          setCustomerInfo({
-                            ...customerInfo,
-                            name: e.target.value,
-                          })
-                        }
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        value={customerInfo.email}
-                        onChange={(e) =>
-                          setCustomerInfo({
-                            ...customerInfo,
-                            email: e.target.value,
-                          })
-                        }
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
-                      />
+                      <h3 className="text-xl font-semibold">
+                        {currentProduct?.name}
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        {currentSupplier?.name}
+                      </p>
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={customerInfo.phone}
-                      onChange={(e) =>
-                        setCustomerInfo({
-                          ...customerInfo,
-                          phone: e.target.value,
-                        })
-                      }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Street Address
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={customerInfo.address.street}
-                      onChange={(e) =>
-                        setCustomerInfo({
-                          ...customerInfo,
-                          address: {
-                            ...customerInfo.address,
-                            street: e.target.value,
-                          },
-                        })
-                      }
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        City
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={customerInfo.address.city}
-                        onChange={(e) =>
-                          setCustomerInfo({
-                            ...customerInfo,
-                            address: {
-                              ...customerInfo.address,
-                              city: e.target.value,
-                            },
-                          })
-                        }
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Province
-                      </label>
-                      <select
-                        required
-                        value={customerInfo.address.state}
-                        onChange={(e) =>
-                          setCustomerInfo({
-                            ...customerInfo,
-                            address: {
-                              ...customerInfo.address,
-                              state: e.target.value,
-                            },
-                          })
-                        }
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
-                      >
-                        <option value="">Select Province</option>
-                        <option value="City of Kigali">City of Kigali</option>
-                        <option value="Eastern Province">
-                          Eastern Province
-                        </option>
-                        <option value="Northern Province">
-                          Northern Province
-                        </option>
-                        <option value="Southern Province">
-                          Southern Province
-                        </option>
-                        <option value="Western Province">
-                          Western Province
-                        </option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Postal Code
-                      </label>
-                      <input
-                        type="text"
-                        value={customerInfo.address.zip}
-                        onChange={(e) =>
-                          setCustomerInfo({
-                            ...customerInfo,
-                            address: {
-                              ...customerInfo.address,
-                              zip: e.target.value,
-                            },
-                          })
-                        }
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-burgundy/20 focus:border-primary-burgundy transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Country
-                      </label>
-                      <input
-                        type="text"
-                        value={customerInfo.address.country}
-                        readOnly
-                        className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Order Summary */}
-                  <div className="mt-8 p-6 bg-gray-50 rounded-xl border border-gray-100">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                      Order Summary
-                    </h3>
-                    <div className="space-y-3">
-                      {cart.map((item) => (
-                        <div
-                          key={item._id}
-                          className="flex items-center justify-between"
-                        >
-                          <div className="flex items-center space-x-3">
-                            <span className="text-xl">{item.image}</span>
-                            <div>
-                              <p className="font-medium text-gray-900 text-sm">
-                                {item.name}
-                              </p>
-                              <p className="text-gray-500 text-xs">
-                                Qty: {item.quantity} • {item.supplierName}
-                              </p>
-                            </div>
+                  {/* Price */}
+                  <div className="bg-gray-800 rounded-xl p-4">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-3xl font-bold text-primary-gold">
+                        ${currentProduct?.price}
+                      </span>
+                      {currentProduct?.originalPrice >
+                        currentProduct?.price && (
+                        <>
+                          <span className="text-lg text-gray-400 line-through">
+                            ${currentProduct?.originalPrice}
+                          </span>
+                          <div className="bg-primary-red px-2 py-1 rounded-full text-xs font-bold">
+                            -{currentProduct?.discount}%
                           </div>
-                          <span className="font-semibold text-primary-burgundy">
-                            ${(item.price * item.quantity).toFixed(2)}
-                          </span>
-                        </div>
-                      ))}
-                      <div className="border-t border-gray-200 pt-3 mt-4">
-                        <div className="flex justify-between items-center">
-                          <span className="text-lg font-semibold text-gray-900">
-                            Total:
-                          </span>
-                          <span className="text-xl font-bold text-primary-burgundy">
-                            ${getTotalPrice().toFixed(2)}
-                          </span>
-                        </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="bg-gray-800 rounded-xl p-4">
+                    <h4 className="text-lg font-semibold mb-2">Description</h4>
+                    <p className="text-sm text-gray-300">
+                      {currentProduct?.description}
+                    </p>
+                  </div>
+
+                  {/* Rating and Reviews */}
+                  <div className="bg-gray-800 rounded-xl p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-lg font-semibold">
+                        Rating & Reviews
+                      </h4>
+                      <div className="flex items-center space-x-2">
+                        <Star className="w-4 h-4 text-primary-gold" />
+                        <span className="text-sm font-bold">
+                          {currentProduct?.rating}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                          ({currentProduct?.totalReviews} reviews)
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-300">
+                      {currentProduct?.views} people have viewed this product.
+                    </p>
+                  </div>
+
+                  {/* Supplier Info */}
+                  <div className="bg-gray-800 rounded-xl p-4">
+                    <h4 className="text-lg font-semibold mb-2">
+                      Supplier Information
+                    </h4>
+                    <div className="flex items-center space-x-4">
+                      <div className="text-4xl">{currentSupplier?.image}</div>
+                      <div>
+                        <h5 className="text-md font-semibold">
+                          {currentSupplier?.name}
+                        </h5>
+                        <p className="text-sm text-gray-400">
+                          {currentSupplier?.username}
+                        </p>
                       </div>
                     </div>
                   </div>
-
-                  <button
-                    onClick={handleCheckout}
-                    className="w-full py-4 bg-primary-burgundy text-white rounded-xl font-semibold text-lg hover:bg-burgundy-light transition-colors"
-                    disabled={cart.length === 0}
-                  >
-                    Place Order - ${getTotalPrice().toFixed(2)}
-                  </button>
                 </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="border-t border-gray-700 p-4">
+                <Button className="w-full bg-gradient-to-r from-primary-burgundy to-primary-gold hover:from-burgundy-light hover:to-gold-light text-white">
+                  Add to Cart
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Enhanced Supplier Info Modal */}
+      {showSupplierInfo && (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setShowSupplierInfo(false)}
+          />
+          <div className="absolute right-0 top-0 h-full w-full max-w-md bg-gray-900 text-white border-l border-gray-700">
+            <div className="flex flex-col h-full">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gradient-to-r from-primary-burgundy/20 to-primary-gold/20">
+                <h2 className="text-lg font-semibold">Supplier Information</h2>
+                <button
+                  onClick={() => setShowSupplierInfo(false)}
+                  className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <div className="space-y-4">
+                  {/* Supplier Header */}
+                  <div className="bg-gray-800 rounded-xl p-4">
+                    <div className="flex items-center space-x-4 mb-2">
+                      <div className="text-5xl">{currentSupplier?.image}</div>
+                      <div>
+                        <h3 className="text-xl font-semibold">
+                          {currentSupplier?.name}
+                        </h3>
+                        <p className="text-sm text-gray-400">
+                          {currentSupplier?.username}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-300">
+                      {currentSupplier?.description}
+                    </p>
+                  </div>
+
+                  {/* Categories */}
+                  <div className="bg-gray-800 rounded-xl p-4">
+                    <h4 className="text-lg font-semibold mb-2">Categories</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {currentSupplier?.categories?.map((category, index) => (
+                        <Badge key={index} className="bg-gray-700 text-white">
+                          {category}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Products */}
+                  <div className="bg-gray-800 rounded-xl p-4">
+                    <h4 className="text-lg font-semibold mb-2">Products</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      {currentSupplier?.products?.map((product) => (
+                        <div
+                          key={product._id}
+                          className="bg-gray-700 rounded-xl p-3"
+                        >
+                          <div className="text-center">
+                            <div className="text-3xl mb-2">{product.image}</div>
+                            <h5 className="text-md font-semibold">
+                              {product.name}
+                            </h5>
+                            <p className="text-sm text-gray-300">
+                              ${product.price}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="border-t border-gray-700 p-4">
+                <Button className="w-full bg-gradient-to-r from-primary-burgundy to-primary-gold hover:from-burgundy-light hover:to-gold-light text-white">
+                  View All Products
+                </Button>
               </div>
             </div>
           </div>
@@ -2174,503 +1941,206 @@ const CustomerPage = () => {
 
       {/* Wishlist Modal */}
       {showWishlist && (
-        <Dialog open={showWishlist} onOpenChange={setShowWishlist}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center space-x-2">
-                <Heart className="w-5 h-5 text-primary-burgundy" />
-                <span>My Wishlist ({wishlist.length} items)</span>
-              </DialogTitle>
-            </DialogHeader>
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setShowWishlist(false)}
+          />
+          <div className="absolute right-0 top-0 h-full w-full max-w-sm bg-gray-900 text-white border-l border-gray-700">
+            <div className="flex flex-col h-full">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gradient-to-r from-primary-burgundy/20 to-primary-gold/20">
+                <h2 className="text-lg font-semibold">Wishlist</h2>
+                <button
+                  onClick={() => setShowWishlist(false)}
+                  className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
 
-            <Tabs defaultValue="products" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="products">
-                  Products (
-                  {wishlist.filter((w) => w.type === "product").length})
-                </TabsTrigger>
-                <TabsTrigger value="suppliers">
-                  Suppliers (
-                  {wishlist.filter((w) => w.type === "supplier").length})
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="products" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {wishlist
-                    .filter((w) => w.type === "product")
-                    .map((item) => (
-                      <Card
-                        key={item.id}
-                        className="hover:shadow-md transition-shadow"
-                      >
-                        <CardContent className="p-4">
-                          <div className="text-center mb-3">
-                            <div className="text-4xl mb-2">{item.image}</div>
-                            <h4 className="font-semibold text-gray-900">
-                              {item.name}
-                            </h4>
-                            <p className="text-sm text-gray-600">
-                              {item.supplierName}
-                            </p>
-                          </div>
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-lg font-bold text-primary-burgundy">
-                              ${item.price}
-                            </span>
-                            <div className="flex items-center">
-                              <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                              <span className="text-xs text-gray-500 ml-1">
-                                {item.rating}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="flex space-x-2">
-                            <Button
-                              size="sm"
-                              onClick={() => {
-                                const product = products.find(
-                                  (p) => p._id === item.id
-                                );
-                                if (product) addToCart(product);
-                              }}
-                              className="flex-1 bg-primary-burgundy hover:bg-burgundy-light text-white"
-                            >
-                              Add to Cart
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => toggleWishlist(item, "product")}
-                              className="text-red-500 hover:bg-red-50"
-                            >
-                              Remove
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                </div>
-                {wishlist.filter((w) => w.type === "product").length === 0 && (
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                {wishlist.length === 0 ? (
                   <div className="text-center py-12">
-                    <Heart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">
-                      No products in your wishlist yet
+                    <Heart className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-400 mb-2">
+                      Your wishlist is empty
+                    </h3>
+                    <p className="text-gray-500 mb-4">
+                      Add some amazing products!
                     </p>
+                    <Button
+                      onClick={() => setShowWishlist(false)}
+                      className="bg-gradient-to-r from-primary-burgundy to-primary-gold hover:from-burgundy-light hover:to-gold-light text-white"
+                    >
+                      Continue Shopping
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {wishlist.map((item) => (
+                      <div
+                        key={item._id}
+                        className="flex items-center space-x-3 bg-gray-800 p-3 rounded-xl"
+                      >
+                        <div className="text-3xl">{item.image}</div>
+                        <div>
+                          <h4 className="font-medium text-white">
+                            {item.name}
+                          </h4>
+                          <p className="text-sm text-gray-400">${item.price}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
-              </TabsContent>
+              </div>
 
-              <TabsContent value="suppliers" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {wishlist
-                    .filter((w) => w.type === "supplier")
-                    .map((item) => (
-                      <Card
-                        key={item.id}
-                        className="hover:shadow-md transition-shadow"
-                      >
-                        <CardContent className="p-4">
-                          <div className="flex items-center space-x-4">
-                            <div className="text-3xl">{item.image}</div>
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-gray-900">
-                                {item.name}
-                              </h4>
-                              <p className="text-sm text-gray-600">
-                                {item.location}
-                              </p>
-                              <div className="flex items-center mt-1">
-                                <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                                <span className="text-xs text-gray-500 ml-1">
-                                  {item.rating} ({item.totalReviews})
-                                </span>
-                              </div>
-                            </div>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => toggleWishlist(item, "supplier")}
-                              className="text-red-500 hover:bg-red-50"
-                            >
-                              Remove
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                </div>
-                {wishlist.filter((w) => w.type === "supplier").length === 0 && (
-                  <div className="text-center py-12">
-                    <Heart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">
-                      No suppliers in your wishlist yet
-                    </p>
-                  </div>
-                )}
-              </TabsContent>
-            </Tabs>
-          </DialogContent>
-        </Dialog>
+              {/* Modal Footer */}
+              <div className="border-t border-gray-700 p-4">
+                <Button className="w-full bg-gradient-to-r from-primary-burgundy to-primary-gold hover:from-burgundy-light hover:to-gold-light text-white">
+                  View All
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
-      {/* Order Tracking Modal */}
-      {showOrderTracking && (
-        <Dialog open={showOrderTracking} onOpenChange={setShowOrderTracking}>
-          <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center space-x-2">
-                <Package className="w-5 h-5 text-primary-burgundy" />
-                <span>My Orders ({customerOrders.length})</span>
-              </DialogTitle>
-            </DialogHeader>
+      {/* Chat Modal */}
+      {showChat && (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setShowChat(false)}
+          />
+          <div className="absolute right-0 top-0 h-full w-full max-w-sm bg-gray-900 text-white border-l border-gray-700">
+            <div className="flex flex-col h-full">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gradient-to-r from-primary-burgundy/20 to-primary-gold/20">
+                <h2 className="text-lg font-semibold">Chat with Supplier</h2>
+                <button
+                  onClick={() => setShowChat(false)}
+                  className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
 
-            <div className="space-y-6">
-              {customerOrders.map((order) => (
-                <Card key={order.id} className="overflow-hidden">
-                  <CardContent className="p-0">
-                    {/* Order Header */}
-                    <div className="bg-gray-50 p-4 border-b">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold text-gray-900">
-                            {order.id}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {order.supplierName}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <Badge className={getOrderStatusColor(order.status)}>
-                            {order.status.charAt(0).toUpperCase() +
-                              order.status.slice(1)}
-                          </Badge>
-                          <p className="text-sm text-gray-600 mt-1">
-                            Total: ${order.total}
-                          </p>
-                        </div>
+              {/* Chat Messages */}
+              <div className="flex-1 overflow-y-auto p-4">
+                {/* Example Messages */}
+                <div className="mb-4">
+                  <div className="bg-gray-800 rounded-xl p-3 text-sm">
+                    Hello! Do you have this product in other colors?
+                  </div>
+                  <div className="text-xs text-gray-400 text-right mt-1">
+                    10:30 AM
+                  </div>
+                </div>
+                <div className="mb-4">
+                  <div className="bg-gradient-to-r from-primary-burgundy to-primary-gold rounded-xl p-3 text-sm text-white ml-auto w-fit">
+                    Yes, we have it in red, blue, and green.
+                  </div>
+                  <div className="text-xs text-gray-400 text-left mt-1">
+                    10:32 AM
+                  </div>
+                </div>
+              </div>
+
+              {/* Message Input */}
+              <div className="border-t border-gray-700 p-4">
+                <div className="flex items-center space-x-2">
+                  <Input
+                    placeholder="Type your message..."
+                    className="bg-gray-800 border-gray-700 text-white"
+                  />
+                  <Button className="bg-gradient-to-r from-primary-burgundy to-primary-gold hover:from-burgundy-light hover:to-gold-light text-white">
+                    Send
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Modal */}
+      {showProfile && (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setShowProfile(false)}
+          />
+          <div className="absolute right-0 top-0 h-full w-full max-w-sm bg-gray-900 text-white border-l border-gray-700">
+            <div className="flex flex-col h-full">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gradient-to-r from-primary-burgundy/20 to-primary-gold/20">
+                <h2 className="text-lg font-semibold">Your Profile</h2>
+                <button
+                  onClick={() => setShowProfile(false)}
+                  className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <div className="space-y-4">
+                  {/* Profile Info */}
+                  <div className="bg-gray-800 rounded-xl p-4">
+                    <div className="flex items-center space-x-4 mb-2">
+                      <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-2xl">
+                        👤
                       </div>
-                    </div>
-
-                    {/* Order Details */}
-                    <div className="p-4">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-2">
-                            Order Date
-                          </h4>
-                          <p className="text-sm text-gray-600">
-                            {order.orderDate}
-                          </p>
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-2">
-                            Estimated Delivery
-                          </h4>
-                          <p className="text-sm text-gray-600">
-                            {order.estimatedDelivery}
-                          </p>
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-2">
-                            Tracking Number
-                          </h4>
-                          <p className="text-sm font-mono text-primary-burgundy">
-                            {order.trackingNumber}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Order Items */}
-                      <div className="mb-4">
-                        <h4 className="font-medium text-gray-900 mb-2">
-                          Items
-                        </h4>
-                        <div className="space-y-2">
-                          {order.items.map((item, index) => (
-                            <div
-                              key={index}
-                              className="flex items-center justify-between p-2 bg-gray-50 rounded"
-                            >
-                              <span className="text-sm">
-                                {item.name} × {item.quantity}
-                              </span>
-                              <span className="text-sm font-medium">
-                                ${(item.price * item.quantity).toFixed(2)}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Status Timeline */}
                       <div>
-                        <h4 className="font-medium text-gray-900 mb-3">
-                          Order Status
-                        </h4>
-                        <div className="space-y-3">
-                          {order.statusHistory.map((status, index) => (
-                            <div
-                              key={index}
-                              className="flex items-start space-x-3"
-                            >
-                              <div
-                                className={`w-3 h-3 rounded-full mt-1 ${
-                                  index === order.statusHistory.length - 1
-                                    ? "bg-primary-burgundy"
-                                    : "bg-green-500"
-                                }`}
-                              />
-                              <div className="flex-1">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-sm font-medium capitalize">
-                                    {status.status}
-                                  </span>
-                                  <span className="text-xs text-gray-500">
-                                    {status.date}
-                                  </span>
-                                </div>
-                                <p className="text-sm text-gray-600">
-                                  {status.description}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex space-x-2 mt-4 pt-4 border-t">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            const supplier = suppliers.find(
-                              (s) => s._id === order.supplierId
-                            );
-                            if (supplier) startChat(supplier);
-                          }}
-                        >
-                          <MessageSquare className="w-4 h-4 mr-1" />
-                          Contact Supplier
-                        </Button>
-                        {order.status === "delivered" && (
-                          <Button
-                            size="sm"
-                            onClick={() =>
-                              openReviewForm("supplier", order.supplierId)
-                            }
-                            className="bg-primary-burgundy hover:bg-burgundy-light text-white"
-                          >
-                            Leave Review
-                          </Button>
-                        )}
+                        <h3 className="text-xl font-semibold">ShopperPro</h3>
+                        <p className="text-sm text-gray-400">Level 12</p>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-
-              {customerOrders.length === 0 && (
-                <div className="text-center py-12">
-                  <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">No orders yet</p>
-                </div>
-              )}
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Bulk Order Request Modal */}
-      {showBulkOrderForm && bulkOrderProduct && (
-        <Dialog open={showBulkOrderForm} onOpenChange={setShowBulkOrderForm}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle className="flex items-center space-x-3">
-                <div className="text-2xl">{bulkOrderProduct.image}</div>
-                <div>
-                  <span>Bulk Order Request</span>
-                  <p className="text-sm text-gray-600 font-normal">
-                    {bulkOrderProduct.name}
-                  </p>
-                </div>
-              </DialogTitle>
-            </DialogHeader>
-
-            <div className="space-y-6">
-              {/* Product Info */}
-              <div className="p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium">{bulkOrderProduct.name}</h4>
-                    <p className="text-sm text-gray-600">
-                      {bulkOrderProduct.supplierName}
+                    <p className="text-sm text-gray-300">
+                      Welcome to your profile! Here you can manage your account
+                      and view your activity.
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-primary-burgundy">
-                      ${bulkOrderProduct.price}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      per {bulkOrderProduct.unit}
-                    </p>
+
+                  {/* Account Settings */}
+                  <div className="bg-gray-800 rounded-xl p-4">
+                    <h4 className="text-lg font-semibold mb-2">
+                      Account Settings
+                    </h4>
+                    <ul className="space-y-2">
+                      <li>
+                        <button className="w-full text-left text-sm text-gray-300 hover:text-white">
+                          Edit Profile
+                        </button>
+                      </li>
+                      <li>
+                        <button className="w-full text-left text-sm text-gray-300 hover:text-white">
+                          Change Password
+                        </button>
+                      </li>
+                      <li>
+                        <button className="w-full text-left text-sm text-gray-300 hover:text-white">
+                          Notifications
+                        </button>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
 
-              {/* Bulk Order Form */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quantity Needed
-                  </label>
-                  <Input
-                    type="number"
-                    placeholder="e.g., 100"
-                    value={bulkOrderForm.quantity}
-                    onChange={(e) =>
-                      setBulkOrderForm({
-                        ...bulkOrderForm,
-                        quantity: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Target Price (per unit)
-                  </label>
-                  <Input
-                    type="number"
-                    placeholder="e.g., 40.00"
-                    value={bulkOrderForm.targetPrice}
-                    onChange={(e) =>
-                      setBulkOrderForm({
-                        ...bulkOrderForm,
-                        targetPrice: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Delivery Deadline
-                </label>
-                <Input
-                  type="date"
-                  value={bulkOrderForm.deadline}
-                  onChange={(e) =>
-                    setBulkOrderForm({
-                      ...bulkOrderForm,
-                      deadline: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Preferred Contact Method
-                </label>
-                <select
-                  value={bulkOrderForm.contactMethod}
-                  onChange={(e) =>
-                    setBulkOrderForm({
-                      ...bulkOrderForm,
-                      contactMethod: e.target.value,
-                    })
-                  }
-                  className="w-full p-2 border border-gray-200 rounded-md"
-                >
-                  <option value="email">Email</option>
-                  <option value="phone">Phone</option>
-                  <option value="whatsapp">WhatsApp</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Additional Notes
-                </label>
-                <textarea
-                  placeholder="Any specific requirements, customizations, or questions..."
-                  value={bulkOrderForm.notes}
-                  onChange={(e) =>
-                    setBulkOrderForm({
-                      ...bulkOrderForm,
-                      notes: e.target.value,
-                    })
-                  }
-                  className="w-full p-3 border border-gray-200 rounded-lg h-24 resize-none"
-                />
-              </div>
-
-              {/* Estimated Savings */}
-              {bulkOrderForm.quantity && bulkOrderForm.targetPrice && (
-                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                  <h4 className="font-medium text-green-800 mb-2">
-                    💰 Potential Savings
-                  </h4>
-                  <div className="text-sm space-y-1">
-                    <div className="flex justify-between">
-                      <span>Regular Price:</span>
-                      <span>
-                        $
-                        {(
-                          bulkOrderProduct.price *
-                          Number.parseInt(bulkOrderForm.quantity || 0)
-                        ).toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Your Target Price:</span>
-                      <span>
-                        $
-                        {(
-                          Number.parseFloat(bulkOrderForm.targetPrice || 0) *
-                          Number.parseInt(bulkOrderForm.quantity || 0)
-                        ).toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between font-medium text-green-700 border-t border-green-200 pt-1">
-                      <span>Potential Savings:</span>
-                      <span>
-                        $
-                        {(
-                          (bulkOrderProduct.price -
-                            Number.parseFloat(bulkOrderForm.targetPrice || 0)) *
-                          Number.parseInt(bulkOrderForm.quantity || 0)
-                        ).toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex space-x-3">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowBulkOrderForm(false)}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={submitBulkOrder}
-                  className="flex-1 bg-primary-burgundy hover:bg-burgundy-light text-white"
-                  disabled={
-                    !bulkOrderForm.quantity || !bulkOrderForm.targetPrice
-                  }
-                >
-                  Send Request
+              {/* Modal Footer */}
+              <div className="border-t border-gray-700 p-4">
+                <Button className="w-full bg-gradient-to-r from-primary-burgundy to-primary-gold hover:from-burgundy-light hover:to-gold-light text-white">
+                  Logout
                 </Button>
               </div>
             </div>
-          </DialogContent>
-        </Dialog>
+          </div>
+        </div>
       )}
     </div>
   );
